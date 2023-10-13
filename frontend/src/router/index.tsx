@@ -1,14 +1,14 @@
 import { createBrowserRouter } from 'react-router-dom';
-import Map from '../pages/Map';
+import Departments from '../pages/Map';
 
 export const router = createBrowserRouter([
     {
         path: '/map',
-        element: <Map />,
+        element: <Departments />,
     },
 
     {
         path: '*',
-        element: <Map />,
+        element: <Departments />,
     },
 ]);
