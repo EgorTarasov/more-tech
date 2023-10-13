@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"more-tech/internal/api/router"
 	"more-tech/internal/config"
@@ -24,7 +25,7 @@ func main() {
 	if err != nil {
 		logging.Log.Fatalf("can't create mongo client: %+v", err)
 	}
-	// defer
+	defer mongoClient.Disconnect(context.Background())
 
 	router := router.NewRouter(mongoClient)
 	logging.Log.Infof("starting server on port %s", config.Cfg.ServerPort)

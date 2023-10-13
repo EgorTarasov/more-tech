@@ -16,6 +16,8 @@ services:
             context: ../.
             dockerfile: deployment/Dockerfile
         restart: always
+        environment:
+            - DOCKER_MODE=1
         env_file:
             - ../.env
         depends_on:

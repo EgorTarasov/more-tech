@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"fmt"
 	"more-tech/internal/config"
 	"time"
 
@@ -13,13 +14,17 @@ func NewMongoDb() (*mongo.Client, error) {
 	ctx := context.Background()
 
 	for {
-		time.Sleep(time.Second*2)
-		client, err := mongo.Connect(ctx, options.Client().ApplyURI(config.Cfg.MongoURI))
+		time.Sleep(time.Second * 2)
+		// con_string := "mongodb://mongouser:mongopass@localhost:27017/"
+		conString := fmt.Sprintf("mongodb://%s:%s@%s:%s/", config.Cfg.MongoUser, config.Cfg.MongoPassword, config.Cfg.MongoHost, config.Cfg.MongoPort)
+		client, err := mongo.Connect(ctx, options.Client().ApplyURI(conString))
 		if err != nil {
+			fmt.Printf("can't connect to mongo: %+v", err)
 			continue
 		}
 
 		if err := client.Ping(ctx, nil); err != nil {
+			fmt.Printf("can't access mongo: %+v", err)
 			continue
 		}
 
