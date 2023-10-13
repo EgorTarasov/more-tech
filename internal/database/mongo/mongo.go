@@ -25,12 +25,12 @@ func NewMongoDb() (*mongo.Client, error) {
 		conString := fmt.Sprintf("mongodb://%s:%s@%s:%s/", config.Cfg.MongoUser, config.Cfg.MongoPassword, config.Cfg.MongoHost, config.Cfg.MongoPort)
 		client, err := mongo.Connect(ctx, options.Client().ApplyURI(conString))
 		if err != nil {
-			fmt.Printf("can't connect to mongo: %+v", err)
+			fmt.Printf("can't connect to mongo: %+v\n", err)
 			continue
 		}
 
 		if err := client.Ping(ctx, nil); err != nil {
-			fmt.Printf("can't access mongo: %+v", err)
+			fmt.Printf("can't access mongo: %+v\n", err)
 			continue
 		}
 
