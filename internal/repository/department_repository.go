@@ -38,7 +38,7 @@ func (dr *departmentMongoRepository) FindMany(c context.Context, departmentData 
 		"location": bson.M{
 			"$geoWithin": bson.M{
 				"$centerSphere": bson.A{
-					[]float64{departmentData.Longitude, departmentData.Latitude},
+					[]float64{departmentData.Latitude, departmentData.Longitude},
 					departmentData.Radius / 6380.752,
 				},
 			},
