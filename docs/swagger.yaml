@@ -1,0 +1,182 @@
+definitions:
+  model.Coordinates:
+    properties:
+      latitude:
+        example: 55.892334
+        type: number
+      longitude:
+        example: 37.44055
+        type: number
+    type: object
+  model.Department:
+    properties:
+      _id:
+        example: 65298f171d9eaf1f3125fc41
+        type: string
+      Biskvit_id:
+        example: "5010"
+        type: string
+      address:
+        example: Московская область, г. Химки, ул. Пролетарская, д. 8, стр. 1
+        type: string
+      city:
+        example: Химки
+        type: string
+      coordinates:
+        $ref: '#/definitions/model.Coordinates'
+      id:
+        example: 29000262
+        type: integer
+      location:
+        $ref: '#/definitions/model.Location'
+      scheduleFl:
+        example: 'пн-пт: 10:00-20:00 сб: 10:00-17:00 вс: выходной'
+        type: string
+      scheduleJurL:
+        example: 'пн-чт: 10:00-19:00 пт: 10:00-18:00 сб, вс: выходной'
+        type: string
+      shortName:
+        example: ДО «ЦИК «Химки-Правобережный» Филиала № 7701 Банка ВТБ (ПАО)
+        type: string
+      special:
+        $ref: '#/definitions/model.Special'
+      workload:
+        description: историческое
+        items:
+          $ref: '#/definitions/model.Workload'
+        type: array
+    type: object
+  model.DepartmentRangeRequest:
+    properties:
+      latitude:
+        example: 55.892334
+        type: number
+      longitude:
+        example: 37.44055
+        type: number
+      radius:
+        description: in km
+        example: 10
+        type: number
+    required:
+    - latitude
+    - longitude
+    - radius
+    type: object
+  model.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  model.HourWorkload:
+    properties:
+      hour:
+        example: 10:0-11:0
+        type: string
+      load:
+        example: 0.3256373598976446
+        type: number
+    type: object
+  model.Location:
+    properties:
+      coordinates:
+        $ref: '#/definitions/model.Coordinates'
+      type:
+        example: Point
+        type: string
+    type: object
+  model.Special:
+    properties:
+      Prime:
+        example: 0
+        type: integer
+      juridical:
+        example: 1
+        type: integer
+      person:
+        example: 1
+        type: integer
+      ramp:
+        example: 1
+        type: integer
+      vipOffice:
+        example: 0
+        type: integer
+      vipZone:
+        example: 1
+        type: integer
+    type: object
+  model.Workload:
+    properties:
+      day:
+        example: пн
+        type: string
+      loadHours:
+        items:
+          $ref: '#/definitions/model.HourWorkload'
+        type: array
+    type: object
+host: localhost:9999
+info:
+  contact: {}
+  description: More Tech API server
+  title: More Tech API
+paths:
+  /department/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get department by id
+      parameters:
+      - description: Department ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Department'
+        "404":
+          description: Department not found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get department by id
+      tags:
+      - department
+  /department/range:
+    post:
+      consumes:
+      - application/json
+      description: Get department by range
+      parameters:
+      - description: Department range request
+        in: body
+        name: departmentData
+        required: true
+        schema:
+          $ref: '#/definitions/model.DepartmentRangeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Department'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get department by range
+      tags:
+      - department
+swagger: "2.0"

@@ -7,6 +7,7 @@ COPY go.sum ./
 RUN go mod download
 
 COPY cmd/ ./cmd/
+COPY docs ./docs/
 COPY internal/ ./internal/
 COPY .env .
 
