@@ -26,25 +26,25 @@ func NewUserController(ur model.UserRepository) userController {
 func (uc *userController) CreateUser(c *gin.Context) {
 	userData := model.UserCreateRequest{}
 	if err := c.BindJSON(&userData); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		c.JSON(http.StatusUnprocessableEntity, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(userData.Password), bcrypt.DefaultCost)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 	userData.Password = string(hash)
 
 	accessToken, err := service.CreateAccessToken(userData.Email)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 
 	if err := uc.repository.AddOne(c.Request.Context(), userData); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 
@@ -59,16 +59,16 @@ func (uc *userController) GetUserById(c *gin.Context) {
 
 	hex_id, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 
 	user, err := uc.repository.FindOne(c.Request.Context(), bson.M{"_id": hex_id})
 	if errors.Is(err, mongo.ErrNoDocuments) {
-		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+		c.JSON(http.StatusNotFound, model.ErrorResponse{Message: "user not found"})
 		return
 	} else if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 
@@ -79,22 +79,22 @@ func (uc *userController) GetUserById(c *gin.Context) {
 func (uc *userController) Login(c *gin.Context) {
 	userData := model.UserLoginRequest{}
 	if err := c.BindJSON(&userData); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		c.JSON(http.StatusUnprocessableEntity, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-	
+
 	user, err := uc.repository.FindOne(c.Request.Context(), bson.M{"email": userData.Email})
 	if errors.Is(err, mongo.ErrNoDocuments) {
-		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+		c.JSON(http.StatusNotFound, model.ErrorResponse{Message: "user not found"})
 		return
 	} else if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 
 	accessToken, err := service.AuthenticateUser(userData, user.Password)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 

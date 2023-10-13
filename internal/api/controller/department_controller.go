@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"more-tech/internal/logging"
 	"more-tech/internal/model"
 	"net/http"
 
@@ -12,48 +13,89 @@ import (
 )
 
 type departmentController struct {
-	repository model.DepartmentRepository
+	dr model.DepartmentRepository
+	rr model.RatingRepository
 }
 
-func NewDepartmentController(dr model.DepartmentRepository) departmentController {
+func NewDepartmentController(dr model.DepartmentRepository, rr model.RatingRepository) departmentController {
 	return departmentController{
-		repository: dr,
+		dr: dr,
+		rr: rr,
 	}
 }
 
+// GetDepartmentById godoc
+//
+//	@Summary		Get department by id
+//	@Description	Get department by id
+//	@Tags			department
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Department ID"
+//	@Success		200	{object}	model.Department
+//	@Failure		404	{object}	model.ErrorResponse	"Department not found"
+//	@Router			/department/{id} [get]
 func (dc *departmentController) GetDepartmentById(c *gin.Context) {
 	id := c.Param("id")
 
 	hex_id, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	department, err := dc.repository.FindOne(c.Request.Context(), bson.M{"_id": hex_id})
+	department, err := dc.dr.FindOne(c.Request.Context(), bson.M{"_id": hex_id})
 	if errors.Is(err, mongo.ErrNoDocuments) {
-		c.JSON(http.StatusNotFound, gin.H{"error": "department not found"})
+		c.JSON(http.StatusNotFound, model.ErrorResponse{Message: "department not found"})
 		return
 	} else if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, department)
 }
 
+// GetDepartmentByRange godoc
+//
+//	@Summary		Get department by range
+//	@Description	Get department by range
+//	@Tags			department
+//	@Accept			json
+//	@Produce		json
+//	@Param			departmentData	body		model.DepartmentRangeRequest	true	"Department range request"
+//	@Success		200				{object}	[]model.Department
+//	@Failure		400				{object}	model.ErrorResponse	"Bad request"
+//	@Failure		422				{object}	model.ErrorResponse	"Unprocessable entity"
+//	@Router			/department/range [post]
 func (dc *departmentController) GetDepartmentByRange(c *gin.Context) {
 	departmentData := model.DepartmentRangeRequest{}
 	if err := c.BindJSON(&departmentData); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		c.JSON(http.StatusUnprocessableEntity, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	departments, err := dc.repository.FindMany(c.Request.Context(), departmentData)
+	departments, err := dc.dr.FindMany(c.Request.Context(), departmentData)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, departments)
+}
+
+func (dc *departmentController) AddDepartmentRating(c *gin.Context) {
+	ratingData := model.DepartmentRating{}
+	if err := c.BindJSON(&ratingData); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, model.ErrorResponse{Message: err.Error()})
+		return
+	}
+	logging.Log.Warning(ratingData)
+	err := dc.rr.InsertOne(c.Request.Context(), ratingData)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, ratingData)
 }
