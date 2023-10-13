@@ -14,6 +14,7 @@ type DepartmentRating struct {
 	Text         string  `json:"text"`
 	CreatedAt    time.Time
 }
+
 type RatingRepository interface {
 	InsertOne(c context.Context, data DepartmentRating) error
 	FindOne(c context.Context, filter bson.M) (*DepartmentRating, error)

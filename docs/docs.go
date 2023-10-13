@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/department/range": {
+        "/v1/department/range": {
             "post": {
                 "description": "Get department by range",
                 "consumes": [
@@ -64,7 +64,53 @@ const docTemplate = `{
                 }
             }
         },
-        "/department/{id}": {
+        "/v1/department/rating": {
+            "post": {
+                "description": "Add department rating",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "department"
+                ],
+                "summary": "Add department rating",
+                "parameters": [
+                    {
+                        "description": "Department rating",
+                        "name": "ratingData",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.DepartmentRating"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rating added",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable entity",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/department/{id}": {
             "get": {
                 "description": "Get department by id",
                 "consumes": [
@@ -97,6 +143,208 @@ const docTemplate = `{
                         "description": "Department not found",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/tickets": {
+            "post": {
+                "description": "Create a new ticket",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tickets"
+                ],
+                "summary": "Create a new ticket",
+                "parameters": [
+                    {
+                        "description": "Ticket",
+                        "name": "ticket",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Ticket"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Ticket id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/tickets/department/{departmentId}": {
+            "get": {
+                "description": "Get all tickets for department",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tickets"
+                ],
+                "summary": "Get all tickets for department",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Department id",
+                        "name": "departmentId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tickets",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Ticket"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/tickets/user/{userId}": {
+            "get": {
+                "description": "Get all tickets for user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tickets"
+                ],
+                "summary": "Get all tickets for user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User id",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tickets",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Ticket"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/tickets/{ticketId}": {
+            "get": {
+                "description": "Get ticket by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tickets"
+                ],
+                "summary": "Get ticket by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ticket id",
+                        "name": "ticketId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ticket",
+                        "schema": {
+                            "$ref": "#/definitions/model.Ticket"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Cancel ticket",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tickets"
+                ],
+                "summary": "Cancel ticket",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ticket id",
+                        "name": "ticketId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -193,6 +441,26 @@ const docTemplate = `{
                 }
             }
         },
+        "model.DepartmentRating": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "departmentId": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
         "model.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -255,6 +523,27 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Ticket": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "example": "5f9e3b4e1d9eaf1f3125fc3f"
+                },
+                "departmentId": {
+                    "type": "string",
+                    "example": "5f9e3b4e1d9eaf1f3125fc3f"
+                },
+                "timeSlot": {
+                    "type": "string",
+                    "example": "2020-11-02T10:00:00.000Z"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "5f9e3b4e1d9eaf1f3125fc3f"
+                }
+            }
+        },
         "model.Workload": {
             "type": "object",
             "properties": {
@@ -275,7 +564,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
+	Version:          "0.0.1",
 	Host:             "localhost:9999",
 	BasePath:         "",
 	Schemes:          []string{},

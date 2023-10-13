@@ -34,7 +34,7 @@ func NewLogger() error {
 	case "ERROR":
 		Log.SetLevel(logrus.ErrorLevel)
 	default:
-		Log.SetLevel(logrus.InfoLevel)
+		Log.SetLevel(logrus.DebugLevel)
 	}
 
 	return nil

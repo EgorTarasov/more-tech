@@ -34,7 +34,7 @@ func NewDepartmentController(dr model.DepartmentRepository, rr model.RatingRepos
 //	@Param			id	path		string	true	"Department ID"
 //	@Success		200	{object}	model.Department
 //	@Failure		404	{object}	model.ErrorResponse	"Department not found"
-//	@Router			/department/{id} [get]
+//	@Router			/v1/department/{id} [get]
 func (dc *departmentController) GetDepartmentById(c *gin.Context) {
 	id := c.Param("id")
 
@@ -67,7 +67,7 @@ func (dc *departmentController) GetDepartmentById(c *gin.Context) {
 //	@Success		200				{object}	[]model.Department
 //	@Failure		400				{object}	model.ErrorResponse	"Bad request"
 //	@Failure		422				{object}	model.ErrorResponse	"Unprocessable entity"
-//	@Router			/department/range [post]
+//	@Router			/v1/department/range [post]
 func (dc *departmentController) GetDepartmentByRange(c *gin.Context) {
 	departmentData := model.DepartmentRangeRequest{}
 	if err := c.BindJSON(&departmentData); err != nil {
@@ -84,13 +84,27 @@ func (dc *departmentController) GetDepartmentByRange(c *gin.Context) {
 	c.JSON(http.StatusOK, departments)
 }
 
+// AddDepartmentRating godoc
+//
+//	@Summary		Add department rating
+//	@Description	Add department rating
+//	@Tags			department
+//	@Accept			json
+//	@Produce		json
+//	@Param			ratingData	body		model.DepartmentRating	true	"Department rating"
+//	@Success		200			{object}	string					"Rating added"
+//	@Failure		400			{object}	model.ErrorResponse		"Bad request"
+//	@Failure		422			{object}	model.ErrorResponse		"Unprocessable entity"
+//	@Router			/v1/department/rating [post]
 func (dc *departmentController) AddDepartmentRating(c *gin.Context) {
 	ratingData := model.DepartmentRating{}
 	if err := c.BindJSON(&ratingData); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-	logging.Log.Warning(ratingData)
+
+	logging.Log.Debug(ratingData)
+
 	err := dc.rr.InsertOne(c.Request.Context(), ratingData)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})

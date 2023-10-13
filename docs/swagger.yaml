@@ -63,6 +63,19 @@ definitions:
     - longitude
     - radius
     type: object
+  model.DepartmentRating:
+    properties:
+      createdAt:
+        type: string
+      departmentId:
+        type: string
+      rating:
+        type: number
+      text:
+        type: string
+      userId:
+        type: string
+    type: object
   model.ErrorResponse:
     properties:
       message:
@@ -106,6 +119,21 @@ definitions:
         example: 1
         type: integer
     type: object
+  model.Ticket:
+    properties:
+      _id:
+        example: 5f9e3b4e1d9eaf1f3125fc3f
+        type: string
+      departmentId:
+        example: 5f9e3b4e1d9eaf1f3125fc3f
+        type: string
+      timeSlot:
+        example: "2020-11-02T10:00:00.000Z"
+        type: string
+      userId:
+        example: 5f9e3b4e1d9eaf1f3125fc3f
+        type: string
+    type: object
   model.Workload:
     properties:
       day:
@@ -121,8 +149,9 @@ info:
   contact: {}
   description: More Tech API server
   title: More Tech API
+  version: 0.0.1
 paths:
-  /department/{id}:
+  /v1/department/{id}:
     get:
       consumes:
       - application/json
@@ -147,7 +176,7 @@ paths:
       summary: Get department by id
       tags:
       - department
-  /department/range:
+  /v1/department/range:
     post:
       consumes:
       - application/json
@@ -179,4 +208,167 @@ paths:
       summary: Get department by range
       tags:
       - department
+  /v1/department/rating:
+    post:
+      consumes:
+      - application/json
+      description: Add department rating
+      parameters:
+      - description: Department rating
+        in: body
+        name: ratingData
+        required: true
+        schema:
+          $ref: '#/definitions/model.DepartmentRating'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Rating added
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Add department rating
+      tags:
+      - department
+  /v1/tickets:
+    post:
+      consumes:
+      - application/json
+      description: Create a new ticket
+      parameters:
+      - description: Ticket
+        in: body
+        name: ticket
+        required: true
+        schema:
+          $ref: '#/definitions/model.Ticket'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Ticket id
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Create a new ticket
+      tags:
+      - tickets
+  /v1/tickets/{ticketId}:
+    delete:
+      consumes:
+      - application/json
+      description: Cancel ticket
+      parameters:
+      - description: Ticket id
+        in: path
+        name: ticketId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Cancel ticket
+      tags:
+      - tickets
+    get:
+      consumes:
+      - application/json
+      description: Get ticket by id
+      parameters:
+      - description: Ticket id
+        in: path
+        name: ticketId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ticket
+          schema:
+            $ref: '#/definitions/model.Ticket'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get ticket by id
+      tags:
+      - tickets
+  /v1/tickets/department/{departmentId}:
+    get:
+      consumes:
+      - application/json
+      description: Get all tickets for department
+      parameters:
+      - description: Department id
+        in: path
+        name: departmentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Tickets
+          schema:
+            items:
+              $ref: '#/definitions/model.Ticket'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get all tickets for department
+      tags:
+      - tickets
+  /v1/tickets/user/{userId}:
+    get:
+      consumes:
+      - application/json
+      description: Get all tickets for user
+      parameters:
+      - description: User id
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Tickets
+          schema:
+            items:
+              $ref: '#/definitions/model.Ticket'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get all tickets for user
+      tags:
+      - tickets
 swagger: "2.0"

@@ -10,9 +10,10 @@ import (
 	"os"
 )
 
-//	@title			More Tech API
-//	@description	More Tech API server
-//	@host			localhost:9999
+// @title			More Tech API
+// @description	More Tech API server
+// @host			localhost:9999
+// @version		0.0.1
 func main() {
 	if err := config.NewConfig(); err != nil {
 		fmt.Printf("can't load config: %+v", err)
