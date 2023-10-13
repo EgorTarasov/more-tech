@@ -20,7 +20,7 @@ func NewUserMongoRepository(mongoDb *mongo.Database) model.UserRepository {
 	}
 }
 
-func (ur *userMongoRepository) AddOne(c context.Context, userData model.UserCreateRequest) error {
+func (ur *userMongoRepository) InsertOne(c context.Context, userData model.UserCreateRequest) error {
 	encoded, err := bson.Marshal(userData)
 	if err != nil {
 		return err

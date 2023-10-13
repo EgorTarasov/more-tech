@@ -43,7 +43,7 @@ func (uc *userController) CreateUser(c *gin.Context) {
 		return
 	}
 
-	if err := uc.repository.AddOne(c.Request.Context(), userData); err != nil {
+	if err := uc.repository.InsertOne(c.Request.Context(), userData); err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
 		return
 	}

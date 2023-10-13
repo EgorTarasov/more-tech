@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"more-tech/internal/model"
+	"more-tech/internal/service"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -31,8 +32,8 @@ func (dr *departmentMongoRepository) FindOne(c context.Context, filter bson.M) (
 	return &department, nil
 }
 
-func (dr *departmentMongoRepository) FindMany(c context.Context, departmentData model.DepartmentRangeRequest) ([]model.Department, error) {
-	var departments []model.Department
+func (dr *departmentMongoRepository) FindMany(c context.Context, departmentData model.DepartmentRangeRequest) ([]model.DepartmentRangeResponse, error) {
+	var departments []model.DepartmentRangeResponse
 
 	cursor, err := dr.db.Collection(dr.collection).Find(c, bson.M{
 		"location": bson.M{
@@ -49,6 +50,10 @@ func (dr *departmentMongoRepository) FindMany(c context.Context, departmentData 
 	}
 
 	err = cursor.All(c, &departments)
+	for i := range departments {
+		departments[i].Distance = service.Haversine(departmentData.Longitude, departmentData.Latitude, departments[i].Location.Coordinates.Longitude, departments[i].Location.Coordinates.Latitude)
+	}
+
 	if err != nil {
 		return nil, err
 	}

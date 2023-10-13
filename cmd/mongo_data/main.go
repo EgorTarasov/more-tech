@@ -277,9 +277,9 @@ func loadDepartments(client *mongo.Client) {
 
 func main() {
 	mongoConfig := make(map[string]string)
-	mongoConfig["user"] = "mongouser"
-	mongoConfig["password"] = "mongopass"
-	mongoConfig["host"] = "localhost"
+	mongoConfig["user"] = "LasuriaHilbert"
+	mongoConfig["password"] = "MisisBanachSpace"
+	mongoConfig["host"] = "192.168.1.80"
 	mongoConfig["port"] = "27017"
 
 	for _, arg := range os.Args {

@@ -41,4 +41,5 @@ func (r *router) setup() {
 
 	r.setupUserRoutes(v1)
 	r.setupDepartmentRoutes(v1)
+	r.setupTicketRoutes(v1)
 }
