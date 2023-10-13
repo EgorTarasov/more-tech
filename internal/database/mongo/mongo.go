@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"more-tech/internal/config"
 	"time"
@@ -13,7 +14,12 @@ import (
 func NewMongoDb() (*mongo.Client, error) {
 	ctx := context.Background()
 
+	attemptsCount := 0
 	for {
+		if attemptsCount > 5 {
+			return nil, errors.New("too many attempts while connecting to mongo")
+		}
+		attemptsCount++
 		time.Sleep(time.Second * 2)
 		// con_string := "mongodb://mongouser:mongopass@localhost:27017/"
 		conString := fmt.Sprintf("mongodb://%s:%s@%s:%s/", config.Cfg.MongoUser, config.Cfg.MongoPassword, config.Cfg.MongoHost, config.Cfg.MongoPort)
