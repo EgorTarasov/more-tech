@@ -11,7 +11,7 @@ func AuthMiddleware(dockerMode bool) gin.HandlerFunc {
 		if err != nil {
 			var domain string
 			if dockerMode {
-				domain = "larek.itatmisis.ru"
+				domain = "larek.itatmisis.ru:9999"
 			} else {
 				domain = "localhost"
 			}
