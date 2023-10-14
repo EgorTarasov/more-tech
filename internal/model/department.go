@@ -20,9 +20,10 @@ type Department struct {
 	Coordinates       Coordinates `json:"coordinates"`
 	Location          Location    `json:"location"`
 	Workload          []Workload  `json:"workload"` // историческое
-	Favourite         bool        `json:"favourite" example:"true" default:"false"`
+	Favourite         bool        `json:"favourite" example:"false"`
 	EstimatedTimeCar  float64     `json:"estimatedTimeCar"`
 	EstimatedTimeWalk float64     `json:"estimatedTimeWalk"`
+	AvailableNow      bool        `json:"availableNow"`
 }
 
 type Special struct {

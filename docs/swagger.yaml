@@ -19,6 +19,8 @@ definitions:
       address:
         example: Московская область, г. Химки, ул. Пролетарская, д. 8, стр. 1
         type: string
+      availableNow:
+        type: boolean
       city:
         example: Химки
         type: string
@@ -29,8 +31,7 @@ definitions:
       estimatedTimeWalk:
         type: number
       favourite:
-        default: false
-        example: true
+        example: false
         type: boolean
       id:
         example: 29000262
@@ -204,8 +205,12 @@ definitions:
       departmentId:
         example: 5f9e3b4eknjeaf1f3125fc3f
         type: string
+      description:
+        type: string
+      duration:
+        type: number
       timeSlot:
-        example: "2020-11-02T10:00:00.000Z"
+        example: 12:00-13:00
         type: string
       userId:
         example: 5f9e3b4e1d9jnh1f3125fc3f
@@ -216,12 +221,19 @@ definitions:
       departmentId:
         example: 5f9e3b4e1d9eaf1f3125fc3f
         type: string
+      description:
+        type: string
+      duration:
+        type: number
+      startLatitude:
+        type: number
+      startLongitude:
+        type: number
       timeSlot:
-        example: "2020-11-02T10:00:00.000Z"
+        example: 12:00-13:00
         type: string
     required:
     - departmentId
-    - timeSlot
     type: object
   model.Workload:
     properties:

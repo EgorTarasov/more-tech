@@ -29,6 +29,8 @@ func (tr *ticketMongoRepository) InsertOne(c context.Context, ticketData model.T
 		"departmentId": ticketData.DepartmentId,
 		"timeSlot":     ticketData.TimeSlot,
 		"createdAt":    time.Now(),
+		"description":  ticketData.Description,
+		"duration":     ticketData.Duration,
 	})
 	return res.InsertedID.(primitive.ObjectID).Hex(), err
 }

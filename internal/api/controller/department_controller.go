@@ -18,14 +18,16 @@ type departmentController struct {
 	dr        model.DepartmentRepository
 	rr        model.RatingRepository
 	fr        model.FavouriteRepository
+	tr        model.TicketRepository
 	routeHost string
 }
 
-func NewDepartmentController(dr model.DepartmentRepository, rr model.RatingRepository, fr model.FavouriteRepository, routeHost string) departmentController {
+func NewDepartmentController(dr model.DepartmentRepository, rr model.RatingRepository, fr model.FavouriteRepository, tr model.TicketRepository, routeHost string) departmentController {
 	return departmentController{
 		dr:        dr,
 		rr:        rr,
 		fr:        fr,
+		tr:        tr,
 		routeHost: routeHost,
 	}
 }
@@ -75,8 +77,35 @@ func (dc *departmentController) GetDepartmentById(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-	department.EstimatedTimeCar = timeCar
-	department.EstimatedTimeWalk = timeWalk
+
+	var minTime float64
+	if timeCar < timeWalk {
+		minTime = timeCar
+	} else {
+		minTime = timeWalk
+	}
+
+	timeSlot := service.GetClosestTimeSlot(minTime, department.Workload, "")
+	logging.Log.Debugf("closest timeslot: %s", timeSlot)
+	tickets, err := dc.tr.FindMany(c.Request.Context(), bson.M{"departmentId": department.MongoId, "timeSlot": timeSlot})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
+		return
+	}
+	logging.Log.Debugf("tickets on this timeslot: %+v", tickets)
+
+	ticketsTime := 0.0
+	for _, ticket := range tickets {
+		ticketsTime += ticket.Duration
+	}
+	department.EstimatedTimeCar = timeCar + ticketsTime
+	department.EstimatedTimeWalk = timeWalk + ticketsTime
+	logging.Log.Debugf("tickets time: %f", ticketsTime)
+	if ticketsTime >= 60*60 || timeSlot == "no timeslot found" {
+		department.AvailableNow = false
+	} else {
+		department.AvailableNow = true
+	}
 
 	favourite, err := dc.fr.FindOne(c.Request.Context(), bson.M{"userId": userId})
 	if errors.Is(err, mongo.ErrNoDocuments) {

@@ -626,6 +626,9 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Московская область, г. Химки, ул. Пролетарская, д. 8, стр. 1"
                 },
+                "availableNow": {
+                    "type": "boolean"
+                },
                 "city": {
                     "type": "string",
                     "example": "Химки"
@@ -641,8 +644,7 @@ const docTemplate = `{
                 },
                 "favourite": {
                     "type": "boolean",
-                    "default": false,
-                    "example": true
+                    "example": false
                 },
                 "id": {
                     "type": "integer",
@@ -885,9 +887,15 @@ const docTemplate = `{
                     "type": "string",
                     "example": "5f9e3b4eknjeaf1f3125fc3f"
                 },
+                "description": {
+                    "type": "string"
+                },
+                "duration": {
+                    "type": "number"
+                },
                 "timeSlot": {
                     "type": "string",
-                    "example": "2020-11-02T10:00:00.000Z"
+                    "example": "12:00-13:00"
                 },
                 "userId": {
                     "type": "string",
@@ -898,17 +906,28 @@ const docTemplate = `{
         "model.TicketCreate": {
             "type": "object",
             "required": [
-                "departmentId",
-                "timeSlot"
+                "departmentId"
             ],
             "properties": {
                 "departmentId": {
                     "type": "string",
                     "example": "5f9e3b4e1d9eaf1f3125fc3f"
                 },
+                "description": {
+                    "type": "string"
+                },
+                "duration": {
+                    "type": "number"
+                },
+                "startLatitude": {
+                    "type": "number"
+                },
+                "startLongitude": {
+                    "type": "number"
+                },
                 "timeSlot": {
                     "type": "string",
-                    "example": "2020-11-02T10:00:00.000Z"
+                    "example": "12:00-13:00"
                 }
             }
         },

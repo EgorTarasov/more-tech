@@ -1,22 +1,29 @@
 package controller
 
 import (
-	"more-tech/internal/config"
+	"errors"
 	"more-tech/internal/logging"
 	"more-tech/internal/model"
+	"more-tech/internal/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type ticketController struct {
-	tr model.TicketRepository
+	tr        model.TicketRepository
+	dr        model.DepartmentRepository
+	routeHost string
 }
 
-func NewTicketController(tr model.TicketRepository) *ticketController {
+func NewTicketController(tr model.TicketRepository, dr model.DepartmentRepository, routeHost string) *ticketController {
 	return &ticketController{
-		tr: tr,
+		tr:        tr,
+		dr:        dr,
+		routeHost: routeHost,
 	}
 }
 
@@ -39,16 +46,75 @@ func (tc *ticketController) CreateTicket(c *gin.Context) {
 		return
 	}
 
-	ticketsCount, err := tc.tr.Count(c.Request.Context(), bson.M{"departmentId": ticket.DepartmentId, "timeSlot": ticket.TimeSlot})
+	if ticket.Duration == 0 {
+		ticket.Duration = 15 * 60
+	}
+	if ticket.Description == "" {
+		ticket.Description = "Открытие вклада"
+	}
+
+	hexId, err := primitive.ObjectIDFromHex(ticket.DepartmentId)
 	if err != nil {
 		c.JSON(http.StatusNotFound, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	if ticketsCount >= config.Cfg.DepartmentCapacityPerTimeSlot {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "department is full"})
+	department, err := tc.dr.FindOne(c.Request.Context(), bson.M{"_id": hexId})
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		c.JSON(http.StatusNotFound, model.ErrorResponse{Message: "department not found"})
+		return
+	} else if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
+
+	timeCar, timeWalk, err := service.GetEstimatedTime(ticket.StartLongitude, ticket.StartLatitude, department.Coordinates.Longitude, department.Coordinates.Latitude, tc.routeHost)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
+		return
+	}
+
+	var minTime float64
+	if timeCar < timeWalk {
+		minTime = timeCar
+	} else {
+		minTime = timeWalk
+	}
+
+	if service.GetClosestTimeSlot(minTime, nil, ticket.TimeSlot) != ticket.TimeSlot {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "choose later timeslot"})
+		return
+	}
+
+	tickets, err := tc.tr.FindMany(c.Request.Context(), bson.M{"departmentId": ticket.DepartmentId, "timeSlot": ticket.TimeSlot})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
+		return
+	}
+	logging.Log.Debugf("tickets on this timeslot: %+v", tickets)
+
+	ticketsTime := 0.0
+	for _, ticket := range tickets {
+		ticketsTime += ticket.Duration
+	}
+	timeCar += ticketsTime
+	timeWalk += ticketsTime
+
+	if ticketsTime >= 60*60 {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "choose later timeslot"})
+		return
+	}
+
+	_, err = tc.tr.Count(c.Request.Context(), bson.M{"departmentId": ticket.DepartmentId, "timeSlot": ticket.TimeSlot})
+	if err != nil {
+		c.JSON(http.StatusNotFound, model.ErrorResponse{Message: err.Error()})
+		return
+	}
+
+	// if ticketsCount >= config.Cfg.DepartmentCapacityPerTimeSlot {
+	// 	c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "department is full"})
+	// 	return
+	// }
 
 	var userId string
 
@@ -64,7 +130,11 @@ func (tc *ticketController) CreateTicket(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, ticketId)
+	c.JSON(http.StatusCreated, gin.H{
+		"ticketId":          ticketId,
+		"estimatedTimeCar":  timeCar + ticket.Duration,
+		"estimatedTimeWalk": timeWalk + ticket.Duration,
+	})
 }
 
 // GetTickets godoc
