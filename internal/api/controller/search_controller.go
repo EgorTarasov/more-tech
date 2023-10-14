@@ -1,9 +1,10 @@
 package controller
 
 import (
+	"bytes"
+	"encoding/json"
 	"more-tech/internal/model"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -44,24 +45,28 @@ func (sc *searchController) CreateSearchRecord(c *gin.Context) {
 		return
 	}
 
-	// тут будет запрос к python
-	// python_url/service
-	search := model.Search{
-		Text:        searchData.Text,
-		UserId:      userId,
-		Coordinates: searchData.Coordinates,
-		CreatedAt:   time.Now(),
-		Special: model.SearchSpecial{
-			VipZone:   false,
-			VipOffice: false,
-			Ramp:      true,
-			Person:    true,
-			Juridical: true,
-			Prime:     false,
-		},
-		Atm:    true,
-		Online: false,
+	encoded, err := json.Marshal(searchData)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, model.ErrorResponse{Message: err.Error()})
+		return
 	}
+
+	response, err := http.Post("http://ml:8000/service", "application/json", bytes.NewReader(encoded))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
+		return
+	} else if response.StatusCode != http.StatusOK {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "ml service error"})
+		return
+	}
+
+	search := model.Search{}
+	err = json.NewDecoder(response.Body).Decode(&search)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
+		return
+	}
+	search.UserId = userId
 
 	searchId, err := sc.sr.InsertOne(c.Request.Context(), search)
 	if err != nil {
