@@ -17,5 +17,4 @@ func (r *router) setupDepartmentRoutes(group *gin.RouterGroup) {
 	departments.GET("/:id", dc.GetDepartmentById)
 	departments.POST("", dc.GetDepartmentByRange)
 	departments.POST("/rating", dc.AddDepartmentRating)
-
 }

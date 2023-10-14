@@ -9,8 +9,8 @@ import (
 
 type SearchCreate struct {
 	Text        string      `json:"text" bson:"text" binding:"required" example:"текст запроса"`
-	UserId      string      `json:"-" bson:"userId"`
 	Coordinates Coordinates `json:"coordinates" bson:"coordinates" binding:"required"`
+	Test        bool        `json:"test" bson:"test" binding:"required" example:"true"`
 }
 
 type Search struct {

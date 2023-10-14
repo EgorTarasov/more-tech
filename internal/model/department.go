@@ -58,15 +58,15 @@ type DepartmentRangeRequest struct {
 }
 
 type DepartmentRangeResponse struct {
-	MongoId      string  `json:"_id,omitempty" bson:"_id,omitempty" example:"65298f171d9eaf1f3125fc41"`
-	ShortName    string  `json:"shortName" example:"ДО «ЦИК «Химки-Правобережный» Филиала № 7701 Банка ВТБ (ПАО)"`
-	Addresss     string  `json:"address" bson:"address"`
-	Schedulefl   string  `json:"schedulefl" example:"пн-пт: 10:00-20:00 сб: 10:00-17:00 вс: выходной"`
-	Schedulejurl string  `json:"schedulejurl" example:"пн-чт: 10:00-19:00 пт: 10:00-18:00 сб, вс: выходной"`
-	Distance     float64 `json:"distance" example:"0.3256373598976446"`
-	Rating       float64 `json:"rating" example:"4.2"`
-	Special      Special
-	Location     Location
+	MongoId      string   `json:"_id,omitempty" bson:"_id,omitempty" example:"65298f171d9eaf1f3125fc41"`
+	ShortName    string   `json:"shortName" example:"ДО «ЦИК «Химки-Правобережный» Филиала № 7701 Банка ВТБ (ПАО)"`
+	Addresss     string   `json:"address" bson:"address"`
+	Schedulefl   string   `json:"schedulefl" example:"пн-пт: 10:00-20:00 сб: 10:00-17:00 вс: выходной"`
+	Schedulejurl string   `json:"schedulejurl" example:"пн-чт: 10:00-19:00 пт: 10:00-18:00 сб, вс: выходной"`
+	Distance     float64  `json:"distance" example:"0.3256373598976446"`
+	Rating       float64  `json:"rating" example:"4.2"`
+	Special      Special  `json:"special"`
+	Location     Location `json:"location"`
 }
 
 type DepartmentRepository interface {

@@ -43,13 +43,12 @@ func (sc *searchController) CreateSearchRecord(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-	searchData.UserId = userId
 
 	// тут будет запрос к python
 	// python_url/service
 	search := model.Search{
 		Text:        searchData.Text,
-		UserId:      searchData.UserId,
+		UserId:      userId,
 		Coordinates: searchData.Coordinates,
 		CreatedAt:   time.Now(),
 		Special: model.SearchSpecial{

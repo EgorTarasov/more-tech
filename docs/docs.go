@@ -16,7 +16,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v1/department/range": {
+        "/v1/departments": {
             "post": {
                 "description": "Get department by range",
                 "consumes": [
@@ -65,7 +65,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/department/rating": {
+        "/v1/departments/rating": {
             "post": {
                 "description": "Add department rating",
                 "consumes": [
@@ -111,7 +111,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/department/{id}": {
+        "/v1/departments/{id}": {
             "get": {
                 "description": "Get department by id",
                 "consumes": [
@@ -605,11 +605,16 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "coordinates",
+                "test",
                 "text"
             ],
             "properties": {
                 "coordinates": {
                     "$ref": "#/definitions/model.Coordinates"
+                },
+                "test": {
+                    "type": "boolean",
+                    "example": true
                 },
                 "text": {
                     "type": "string",
