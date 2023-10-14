@@ -5,6 +5,7 @@ import { Button, Col, Row, Typography } from 'antd';
 import { useStores } from '../hooks/useStores';
 import { LeftOutlined } from '@ant-design/icons';
 import { Button as AdmiralButton } from '@admiral-ds/react-ui';
+import { useEffect } from 'react';
 
 type Props = {
     department: IDepartment;
@@ -12,6 +13,10 @@ type Props = {
 
 const DepartmentDetails = ({ department }: Props) => {
     const { rootStore } = useStores();
+
+    useEffect(() => {
+        rootStore.fetchRoute();
+    }, [rootStore, rootStore.selectedDepartment]);
 
     return (
         <>
@@ -42,7 +47,7 @@ const DepartmentDetails = ({ department }: Props) => {
                                     fill='none'
                                     xmlns='http://www.w3.org/2000/svg'
                                 >
-                                    <g clip-path='url(#clip0_170_4491)'>
+                                    <g clipPath='url(#clip0_170_4491)'>
                                         <path
                                             d='M12 0C5.37188 0 0 5.37188 0 12C0 18.6281 5.37188 24 12 24C18.6281 24 24 18.6281 24 12C24 5.37188 18.6281 0 12 0ZM12 21.9984C6.47812 21.9984 2.00156 17.5219 2.00156 12C2.00156 6.47812 6.47812 2.00156 12 2.00156C17.5219 2.00156 21.9984 6.47812 21.9984 12C21.9984 17.5219 17.5219 21.9984 12 21.9984ZM12.9984 3.99844H10.9969V12L15.4969 16.5L16.9969 15L12.9984 11.0016V3.99844Z'
                                             fill='#1E4BD2'
@@ -215,7 +220,7 @@ const DepartmentDetails = ({ department }: Props) => {
                             fill='none'
                             xmlns='http://www.w3.org/2000/svg'
                         >
-                            <g clip-path='url(#clip0_174_5232)'>
+                            <g clipPath='url(#clip0_174_5232)'>
                                 <path
                                     d='M1.40166 12.0442L6.16068 0L10.1863 7.04074L14.1956 0L18.9709 12.0442H20.3726V13.8696H13.1688V12.0442H14.2445L13.2014 9.0454L10.1863 14L7.17116 9.0454L6.12809 12.0442H7.20376V13.8696H3.24249e-05V12.0442H1.40166Z'
                                     fill='#F2782D'
@@ -243,7 +248,15 @@ const DepartmentDetails = ({ department }: Props) => {
             <div className='department__details__actions'>
                 <Col>
                     <AdmiralButton>Записаться в отделение</AdmiralButton>
-                    <AdmiralButton appearance='secondary'>Проложить маршрут</AdmiralButton>
+                    <a
+                        href={`https://yandex.ru/maps/?ll=${rootStore.start[0]}%2C${rootStore.start[1]}&mode=routes&rtext=${rootStore.start[1]}%2C${rootStore.start[0]}~${rootStore.selectedDepartment?.location.coordinates.latitude}%2C${rootStore.selectedDepartment?.location.coordinates.longitude}&rtt=mt&ruri=~&z=14`}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                    >
+                        <AdmiralButton appearance='secondary'>
+                            Проложить маршрут в Яндекс Картах
+                        </AdmiralButton>
+                    </a>
                 </Col>
             </div>
         </>

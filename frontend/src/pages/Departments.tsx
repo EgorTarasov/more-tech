@@ -34,6 +34,7 @@ const Departments = observer(() => {
                     YMapDefaultFeaturesLayer,
                     YMapControls,
                     YMapMarker,
+                    YMapFeature,
                 } = reactify.module(ymaps3);
                 const { YMapZoomControl, YMapGeolocationControl } = reactify.module(
                     await ymaps3.import('@yandex/ymaps3-controls@0.0.1')
@@ -56,20 +57,24 @@ const Departments = observer(() => {
                         <YMapControls position='left'>
                             <YMapGeolocationControl />
                         </YMapControls>
+                        {rootStore.departments.map((department) => {
+                            console.log(department.location);
 
-                        {rootStore.departments.map((department) => (
-                            <YMapMarker
-                                key={department._id}
-                                coordinates={[
-                                    department.Location.Coordinates.longitude,
-                                    department.Location.Coordinates.latitude,
-                                ]}
-                                draggable={false}
-                                position={'center'}
-                            >
-                                <OfficeMarker department={department} />
-                            </YMapMarker>
-                        ))}
+                            return (
+                                <YMapMarker
+                                    key={department._id}
+                                    coordinates={[
+                                        department.location.coordinates.longitude,
+                                        department.location.coordinates?.latitude,
+                                    ]}
+                                    draggable={false}
+                                    position={'center'}
+                                >
+                                    <OfficeMarker department={department} />
+                                </YMapMarker>
+                            );
+                        })}
+                        <YMapFeature {...rootStore.polylyne} />
                     </YMap>
                 ));
             } catch (e) {
@@ -78,7 +83,7 @@ const Departments = observer(() => {
                 setYMaps(<div />);
             }
         })();
-    }, [rootStore.mapLocation, rootStore.departments]);
+    }, [rootStore.mapLocation, rootStore.departments, rootStore.polylyne]);
 
     return (
         <>

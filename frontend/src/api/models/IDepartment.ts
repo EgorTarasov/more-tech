@@ -5,17 +5,17 @@ export interface IDepartment {
     schedulejurl: string;
     special: ISpecial;
     distance: number;
-    Location: ILocation;
+    location: ILocation;
     schedule: ISchedule[];
 }
 
 export interface ISpecial {
-    vipzone: number;
-    vipoffice: number;
+    vipZone: number;
+    vipOffice: number;
     ramp: number;
     person: number;
     juridical: number;
-    prime: number;
+    Prime: number;
 }
 
 export interface ICoordinates {
@@ -25,7 +25,7 @@ export interface ICoordinates {
 
 export interface ILocation {
     type: string;
-    Coordinates: ICoordinates;
+    coordinates: ICoordinates;
 }
 
 export interface ISchedule {
