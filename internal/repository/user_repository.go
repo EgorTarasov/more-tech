@@ -5,6 +5,7 @@ import (
 	"more-tech/internal/model"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -20,13 +21,12 @@ func NewUserMongoRepository(mongoDb *mongo.Database) model.UserRepository {
 	}
 }
 
-func (ur *userMongoRepository) InsertOne(c context.Context, userData model.UserCreateRequest) error {
-	encoded, err := bson.Marshal(userData)
+func (ur *userMongoRepository) InsertOne(c context.Context, userData model.UserCreateRequest) (string, error) {
+	res, err := ur.db.Collection(ur.collection).InsertOne(c, userData)
 	if err != nil {
-		return err
+		return "", err
 	}
-	_, err = ur.db.Collection(ur.collection).InsertOne(c, encoded)
-	return err
+	return res.InsertedID.(primitive.ObjectID).Hex(), nil
 }
 
 func (ur *userMongoRepository) FindOne(c context.Context, filter bson.M) (*model.UserResponse, error) {

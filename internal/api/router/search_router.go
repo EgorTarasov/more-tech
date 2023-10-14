@@ -13,6 +13,7 @@ func (r *router) setupSearchtRoutes(group *gin.RouterGroup) {
 	sc := controller.NewSearchController(searchRepo)
 
 	search := group.Group("/search")
-	search.POST("", sc.CreateSearchRecord)
+	search.GET("/user", sc.GetSearchRecordsForUser)
 	search.GET("/:searchId", sc.GetSearchRecordById)
+	search.POST("", sc.CreateSearchRecord)
 }

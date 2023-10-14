@@ -49,7 +49,6 @@ func (dr *departmentMongoRepository) FindMany(c context.Context, departmentData 
 	if err != nil {
 		return nil, err
 	}
-
 	err = cursor.All(c, &departments)
 	for i := range departments {
 		departments[i].Distance = service.Haversine(departmentData.Longitude, departmentData.Latitude, departments[i].Location.Coordinates.Longitude, departments[i].Location.Coordinates.Latitude)

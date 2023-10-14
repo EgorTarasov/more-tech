@@ -25,6 +25,6 @@ type UserResponse struct {
 }
 
 type UserRepository interface {
-	InsertOne(c context.Context, userData UserCreateRequest) error
+	InsertOne(c context.Context, userData UserCreateRequest) (string, error)
 	FindOne(c context.Context, filter bson.M) (*UserResponse, error)
 }

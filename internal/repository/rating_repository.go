@@ -56,3 +56,5 @@ func (rr *ratingMongoRepository) FindMany(c context.Context, filter bson.M) ([]m
 
 	return ratings, nil
 }
+
+

@@ -141,6 +141,122 @@
                 }
             }
         },
+        "/v1/search": {
+            "post": {
+                "description": "Create a new search record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "search"
+                ],
+                "summary": "Create a new search record",
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "name": "search",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SearchCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Search id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/search/user": {
+            "get": {
+                "description": "Get search records for user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "search"
+                ],
+                "summary": "Get search records for user",
+                "responses": {
+                    "200": {
+                        "description": "Searches",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.SearchResponse"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Searches not found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/search/{searchId}": {
+            "get": {
+                "description": "Get search record by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "search"
+                ],
+                "summary": "Get search record by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search id",
+                        "name": "searchId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search",
+                        "schema": {
+                            "$ref": "#/definitions/model.SearchResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Search not found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/tickets": {
             "post": {
                 "description": "Create a new ticket",
@@ -161,7 +277,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.TicketCreateRequest"
+                            "$ref": "#/definitions/model.TicketCreate"
                         }
                     }
                 ],
@@ -215,7 +331,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.TicketResponse"
+                                "$ref": "#/definitions/model.Ticket"
                             }
                         }
                     },
@@ -228,7 +344,7 @@
                 }
             }
         },
-        "/v1/tickets/user/{userId}": {
+        "/v1/tickets/user": {
             "get": {
                 "description": "Get all tickets for user",
                 "consumes": [
@@ -241,22 +357,13 @@
                     "tickets"
                 ],
                 "summary": "Get all tickets for user",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User id",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Tickets",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.TicketResponse"
+                                "$ref": "#/definitions/model.Ticket"
                             }
                         }
                     },
@@ -295,7 +402,7 @@
                     "200": {
                         "description": "Ticket",
                         "schema": {
-                            "$ref": "#/definitions/model.TicketResponse"
+                            "$ref": "#/definitions/model.Ticket"
                         }
                     },
                     "404": {
@@ -436,10 +543,12 @@
         },
         "model.DepartmentRating": {
             "type": "object",
+            "required": [
+                "departmentId",
+                "rating",
+                "text"
+            ],
             "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
                 "departmentId": {
                     "type": "string"
                 },
@@ -447,9 +556,6 @@
                     "type": "number"
                 },
                 "text": {
-                    "type": "string"
-                },
-                "userId": {
                     "type": "string"
                 }
             }
@@ -487,6 +593,93 @@
                 }
             }
         },
+        "model.SearchCreate": {
+            "type": "object",
+            "required": [
+                "coordinates",
+                "text"
+            ],
+            "properties": {
+                "coordinates": {
+                    "$ref": "#/definitions/model.Coordinates"
+                },
+                "text": {
+                    "type": "string",
+                    "example": "текст запроса"
+                }
+            }
+        },
+        "model.SearchResponse": {
+            "type": "object",
+            "required": [
+                "atm",
+                "coordinates",
+                "createdAt",
+                "online",
+                "special",
+                "text",
+                "userId"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "example": "5f9e9b9b9b9b9b9b9b9b9b9b"
+                },
+                "atm": {
+                    "type": "boolean"
+                },
+                "coordinates": {
+                    "$ref": "#/definitions/model.Coordinates"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "online": {
+                    "type": "boolean"
+                },
+                "special": {
+                    "$ref": "#/definitions/model.SearchSpecial"
+                },
+                "text": {
+                    "type": "string",
+                    "example": "текст запроса"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "5f9e9b9b9b9b9b9b9b889b9b"
+                }
+            }
+        },
+        "model.SearchSpecial": {
+            "type": "object",
+            "properties": {
+                "Prime": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "juridical": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "person": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "ramp": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "vipOffice": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "vipZone": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
         "model.Special": {
             "type": "object",
             "properties": {
@@ -516,12 +709,36 @@
                 }
             }
         },
-        "model.TicketCreateRequest": {
+        "model.Ticket": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "example": "5f9e3b4e1d9eaf1f3asdfc3f"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "departmentId": {
+                    "type": "string",
+                    "example": "5f9e3b4eknjeaf1f3125fc3f"
+                },
+                "timeSlot": {
+                    "type": "string",
+                    "example": "2020-11-02T10:00:00.000Z"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "5f9e3b4e1d9jnh1f3125fc3f"
+                }
+            }
+        },
+        "model.TicketCreate": {
             "type": "object",
             "required": [
                 "departmentId",
-                "timeSlot",
-                "userId"
+                "timeSlot"
             ],
             "properties": {
                 "departmentId": {
@@ -531,35 +748,6 @@
                 "timeSlot": {
                     "type": "string",
                     "example": "2020-11-02T10:00:00.000Z"
-                },
-                "userId": {
-                    "type": "string",
-                    "example": "5f9e3b4e1d9eaf1f3125fc3f"
-                }
-            }
-        },
-        "model.TicketResponse": {
-            "type": "object",
-            "properties": {
-                "_id": {
-                    "type": "string",
-                    "example": "5f9e3b4e1d9eaf1f3125fc3f"
-                },
-                "createdAt": {
-                    "type": "string",
-                    "example": "2021-01-01T00:00:00Z"
-                },
-                "departmentId": {
-                    "type": "string",
-                    "example": "5f9e3b4e1d9eaf1f3125fc3f"
-                },
-                "timeSlot": {
-                    "type": "string",
-                    "example": "2020-11-02T10:00:00.000Z"
-                },
-                "userId": {
-                    "type": "string",
-                    "example": "5f9e3b4e1d9eaf1f3125fc3f"
                 }
             }
         },

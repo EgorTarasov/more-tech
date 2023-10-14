@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"more-tech/internal/model"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -22,22 +21,20 @@ func NewSearchMongoRepository(mongoDb *mongo.Database) model.SearchRepository {
 	}
 }
 
-func (sr *searchMongoRepository) InsertOne(c context.Context, searchData model.SearchCreateRequest) (string, error) {
-	res, err := sr.db.Collection(sr.collection).InsertOne(c, bson.M{
-		"text": searchData.Text,
-		"coordinates": bson.M{
-			"latitude": searchData.Coordinates.Latitude,
-			"longitude": searchData.Coordinates.Longitude,
-		},
-		"createdAt": time.Now(),
-	})
+func (sr *searchMongoRepository) InsertOne(c context.Context, searchData model.Search) (string, error) {
+	res, err := sr.db.Collection(sr.collection).InsertOne(c, searchData)
 	return res.InsertedID.(primitive.ObjectID).Hex(), err
 }
 
-func (sr *searchMongoRepository) FindOne(c context.Context, searchId string) (*model.SearchFullResponse, error) {
-	search := model.SearchFullResponse{}
+func (sr *searchMongoRepository) FindOne(c context.Context, searchId string) (*model.SearchResponse, error) {
+	hex_id, err := primitive.ObjectIDFromHex(searchId)
+	if err != nil {
+		return nil, err
+	}
 
-	err := sr.db.Collection(sr.collection).FindOne(c, searchId).Decode(&search)
+	search := model.SearchResponse{}
+
+	err = sr.db.Collection(sr.collection).FindOne(c, bson.M{"_id": hex_id}).Decode(&search)
 	if err != nil {
 		return nil, err
 	}

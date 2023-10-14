@@ -65,16 +65,16 @@ definitions:
     type: object
   model.DepartmentRating:
     properties:
-      createdAt:
-        type: string
       departmentId:
         type: string
       rating:
         type: number
       text:
         type: string
-      userId:
-        type: string
+    required:
+    - departmentId
+    - rating
+    - text
     type: object
   model.ErrorResponse:
     properties:
@@ -98,6 +98,69 @@ definitions:
         example: Point
         type: string
     type: object
+  model.SearchCreate:
+    properties:
+      coordinates:
+        $ref: '#/definitions/model.Coordinates'
+      text:
+        example: текст запроса
+        type: string
+    required:
+    - coordinates
+    - text
+    type: object
+  model.SearchResponse:
+    properties:
+      _id:
+        example: 5f9e9b9b9b9b9b9b9b9b9b9b
+        type: string
+      atm:
+        type: boolean
+      coordinates:
+        $ref: '#/definitions/model.Coordinates'
+      createdAt:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      online:
+        type: boolean
+      special:
+        $ref: '#/definitions/model.SearchSpecial'
+      text:
+        example: текст запроса
+        type: string
+      userId:
+        example: 5f9e9b9b9b9b9b9b9b889b9b
+        type: string
+    required:
+    - atm
+    - coordinates
+    - createdAt
+    - online
+    - special
+    - text
+    - userId
+    type: object
+  model.SearchSpecial:
+    properties:
+      Prime:
+        example: false
+        type: boolean
+      juridical:
+        example: true
+        type: boolean
+      person:
+        example: true
+        type: boolean
+      ramp:
+        example: true
+        type: boolean
+      vipOffice:
+        example: false
+        type: boolean
+      vipZone:
+        example: true
+        type: boolean
+    type: object
   model.Special:
     properties:
       Prime:
@@ -119,39 +182,35 @@ definitions:
         example: 1
         type: integer
     type: object
-  model.TicketCreateRequest:
-    properties:
-      departmentId:
-        example: 5f9e3b4e1d9eaf1f3125fc3f
-        type: string
-      timeSlot:
-        example: "2020-11-02T10:00:00.000Z"
-        type: string
-      userId:
-        example: 5f9e3b4e1d9eaf1f3125fc3f
-        type: string
-    required:
-    - departmentId
-    - timeSlot
-    - userId
-    type: object
-  model.TicketResponse:
+  model.Ticket:
     properties:
       _id:
-        example: 5f9e3b4e1d9eaf1f3125fc3f
+        example: 5f9e3b4e1d9eaf1f3asdfc3f
         type: string
       createdAt:
         example: "2021-01-01T00:00:00Z"
         type: string
       departmentId:
-        example: 5f9e3b4e1d9eaf1f3125fc3f
+        example: 5f9e3b4eknjeaf1f3125fc3f
         type: string
       timeSlot:
         example: "2020-11-02T10:00:00.000Z"
         type: string
       userId:
+        example: 5f9e3b4e1d9jnh1f3125fc3f
+        type: string
+    type: object
+  model.TicketCreate:
+    properties:
+      departmentId:
         example: 5f9e3b4e1d9eaf1f3125fc3f
         type: string
+      timeSlot:
+        example: "2020-11-02T10:00:00.000Z"
+        type: string
+    required:
+    - departmentId
+    - timeSlot
     type: object
   model.Workload:
     properties:
@@ -257,6 +316,82 @@ paths:
       summary: Add department rating
       tags:
       - department
+  /v1/search:
+    post:
+      consumes:
+      - application/json
+      description: Create a new search record
+      parameters:
+      - description: Search
+        in: body
+        name: search
+        required: true
+        schema:
+          $ref: '#/definitions/model.SearchCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Search id
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Create a new search record
+      tags:
+      - search
+  /v1/search/{searchId}:
+    get:
+      consumes:
+      - application/json
+      description: Get search record by id
+      parameters:
+      - description: Search id
+        in: path
+        name: searchId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Search
+          schema:
+            $ref: '#/definitions/model.SearchResponse'
+        "404":
+          description: Search not found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get search record by id
+      tags:
+      - search
+  /v1/search/user:
+    get:
+      consumes:
+      - application/json
+      description: Get search records for user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Searches
+          schema:
+            items:
+              $ref: '#/definitions/model.SearchResponse'
+            type: array
+        "404":
+          description: Searches not found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get search records for user
+      tags:
+      - search
   /v1/tickets:
     post:
       consumes:
@@ -268,7 +403,7 @@ paths:
         name: ticket
         required: true
         schema:
-          $ref: '#/definitions/model.TicketCreateRequest'
+          $ref: '#/definitions/model.TicketCreate'
       produces:
       - application/json
       responses:
@@ -328,7 +463,7 @@ paths:
         "200":
           description: Ticket
           schema:
-            $ref: '#/definitions/model.TicketResponse'
+            $ref: '#/definitions/model.Ticket'
         "404":
           description: Not Found
           schema:
@@ -354,7 +489,7 @@ paths:
           description: Tickets
           schema:
             items:
-              $ref: '#/definitions/model.TicketResponse'
+              $ref: '#/definitions/model.Ticket'
             type: array
         "404":
           description: Not Found
@@ -363,17 +498,11 @@ paths:
       summary: Get all tickets for department
       tags:
       - tickets
-  /v1/tickets/user/{userId}:
+  /v1/tickets/user:
     get:
       consumes:
       - application/json
       description: Get all tickets for user
-      parameters:
-      - description: User id
-        in: path
-        name: userId
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -381,7 +510,7 @@ paths:
           description: Tickets
           schema:
             items:
-              $ref: '#/definitions/model.TicketResponse'
+              $ref: '#/definitions/model.Ticket'
             type: array
         "404":
           description: Not Found

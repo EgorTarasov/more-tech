@@ -8,11 +8,11 @@ import (
 )
 
 type DepartmentRating struct {
-	Rating       float64 `json:"rating"`
-	DepartmentId string  `json:"departmentId"`
-	UserId       string  `json:"userId"`
-	Text         string  `json:"text"`
-	CreatedAt    time.Time
+	Rating       float64   `json:"rating" bson:"rating" binding:"required"`
+	DepartmentId string    `json:"departmentId" bson:"departmentId" binding:"required"`
+	UserId       string    `json:"-" bson:"userId"`
+	Text         string    `json:"text" bson:"text" binding:"required"`
+	CreatedAt    time.Time `json:"-" bson:"createdAt"`
 }
 
 type RatingRepository interface {

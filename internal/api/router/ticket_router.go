@@ -13,8 +13,8 @@ func (r *router) setupTicketRoutes(group *gin.RouterGroup) {
 	tc := controller.NewTicketController(ticketRepo)
 
 	tickets := group.Group("/tickets")
+	tickets.GET("/user", tc.GetTicketsForUser)
 	tickets.GET("/department/:departmentId", tc.GetTicketsForDepartment)
-	tickets.GET("/user/:userId", tc.GetTicketsForUser)
 	tickets.GET("/:ticketId", tc.GetTicketById)
 	tickets.DELETE("/:ticketId", tc.CancelTicket)
 	tickets.POST("", tc.CreateTicket)

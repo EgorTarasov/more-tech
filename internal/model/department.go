@@ -57,29 +57,16 @@ type DepartmentRangeRequest struct {
 	Radius    float64 `json:"radius" binding:"required" example:"10"` // in km
 }
 
-// TODO: поменять модели для ответа
 type DepartmentRangeResponse struct {
-	MongoId      string `json:"_id,omitempty" bson:"_id,omitempty" example:"65298f171d9eaf1f3125fc41"`
-	ShortName    string `json:"shortName" example:"ДО «ЦИК «Химки-Правобережный» Филиала № 7701 Банка ВТБ (ПАО)"`
-	Addresss     string `json:"address" bson:"address"`
-	Schedulefl   string `json:"schedulefl" example:"пн-пт: 10:00-20:00 сб: 10:00-17:00 вс: выходной"`
-	Schedulejurl string `json:"schedulejurl" example:"пн-чт: 10:00-19:00 пт: 10:00-18:00 сб, вс: выходной"`
-	Special      struct {
-		VipZone   int `json:"vipZone" example:"1"`
-		VipOffice int `json:"vipOffice" example:"0"`
-		Ramp      int `json:"ramp" example:"1"`
-		Person    int `json:"person" example:"1"`
-		Juridical int `json:"juridical" example:"1"`
-		Prime     int `json:"Prime" example:"0"`
-	} `json:"special"`
-	Distance float64 `json:"distance" example:"0.3256373598976446"`
-	Location struct {
-		Type        string `json:"type" example:"Point"`
-		Coordinates struct {
-			Latitude  float64 `json:"latitude" example:"55.892334"`
-			Longitude float64 `json:"longitude" example:"37.44055"`
-		}
-	}
+	MongoId      string  `json:"_id,omitempty" bson:"_id,omitempty" example:"65298f171d9eaf1f3125fc41"`
+	ShortName    string  `json:"shortName" example:"ДО «ЦИК «Химки-Правобережный» Филиала № 7701 Банка ВТБ (ПАО)"`
+	Addresss     string  `json:"address" bson:"address"`
+	Schedulefl   string  `json:"schedulefl" example:"пн-пт: 10:00-20:00 сб: 10:00-17:00 вс: выходной"`
+	Schedulejurl string  `json:"schedulejurl" example:"пн-чт: 10:00-19:00 пт: 10:00-18:00 сб, вс: выходной"`
+	Distance     float64 `json:"distance" example:"0.3256373598976446"`
+	Rating       float64 `json:"rating" example:"4.2"`
+	Special      Special
+	Location     Location
 }
 
 type DepartmentRepository interface {

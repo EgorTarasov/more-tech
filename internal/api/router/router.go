@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	_ "more-tech/docs"
+	"more-tech/internal/api/middleware"
 
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -35,6 +36,7 @@ func (r *router) setup() {
 		AllowMethods: []string{"*"},
 		AllowHeaders: []string{"*"},
 	}))
+	r.engine.Use(middleware.AuthMiddleware())
 	r.engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	v1 := r.engine.Group("/v1")

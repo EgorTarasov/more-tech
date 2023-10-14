@@ -76,6 +76,22 @@ func (dc *departmentController) GetDepartmentByRange(c *gin.Context) {
 	}
 
 	departments, err := dc.dr.FindMany(c.Request.Context(), departmentData)
+	for i := range departments {
+		var ratings []model.DepartmentRating
+		ratings, err = dc.rr.FindMany(c.Request.Context(), bson.M{"department_id": departments[i].MongoId})
+		if err != nil {
+			break
+		}
+		avgRating := 0.0
+		for _, rating := range ratings {
+			avgRating += rating.Rating
+		}
+		if len(ratings) > 0 {
+			avgRating /= float64(len(ratings))
+		}
+		departments[i].Rating = avgRating
+	}
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
 		return
@@ -102,10 +118,16 @@ func (dc *departmentController) AddDepartmentRating(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-
+	
+	userId, err := c.Cookie("session")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
+		return
+	}
+	ratingData.UserId = userId
 	logging.Log.Debug(ratingData)
 
-	err := dc.rr.InsertOne(c.Request.Context(), ratingData)
+	err = dc.rr.InsertOne(c.Request.Context(), ratingData)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
