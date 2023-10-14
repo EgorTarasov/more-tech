@@ -596,7 +596,6 @@
             "type": "object",
             "required": [
                 "coordinates",
-                "test",
                 "text"
             ],
             "properties": {

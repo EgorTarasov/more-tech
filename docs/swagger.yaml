@@ -110,7 +110,6 @@ definitions:
         type: string
     required:
     - coordinates
-    - test
     - text
     type: object
   model.SearchResponse:

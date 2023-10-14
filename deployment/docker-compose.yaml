@@ -24,3 +24,13 @@ services:
             - mongo
         ports:
             - "9999:9999"
+
+    ml:
+        build:
+            context: ../python/
+            dockerfile: ../python/Dockerfile
+        restart: always
+        env_file:
+            - ../.env
+        ports:
+            - "8000:8000"

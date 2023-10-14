@@ -3,6 +3,7 @@ package controller
 import (
 	"bytes"
 	"encoding/json"
+	"more-tech/internal/logging"
 	"more-tech/internal/model"
 	"net/http"
 
@@ -38,6 +39,7 @@ func (sc *searchController) CreateSearchRecord(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, model.ErrorResponse{Message: err.Error()})
 		return
 	}
+	logging.Log.Debugf("sending request: %+v", searchData)
 
 	userId, err := c.Cookie("session")
 	if err != nil {
@@ -59,6 +61,7 @@ func (sc *searchController) CreateSearchRecord(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "ml service error"})
 		return
 	}
+	logging.Log.Debugf("received: %+v", response)
 
 	search := model.Search{}
 	err = json.NewDecoder(response.Body).Decode(&search)
