@@ -1,13 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { useStores } from '../hooks/useStores';
+import { observer } from 'mobx-react-lite';
+import OfficeMarker from '../components/OfficeMarker';
 
-const Departments = () => {
+const Departments = observer(() => {
     const [YMaps, setYMaps] = useState(<div />);
     const map = useRef(null);
+    const { rootStore } = useStores();
+
+    useEffect(() => {
+        rootStore.fetchDepartments();
+    }, [rootStore]);
 
     useEffect(() => {
         (async () => {
             try {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 const ymaps3 = window.ymaps3;
                 const [ymaps3React] = await Promise.all([
@@ -21,19 +30,19 @@ const Departments = () => {
                     YMap,
                     YMapDefaultSchemeLayer,
                     YMapDefaultFeaturesLayer,
-                    YMapMarker,
                     YMapControls,
+                    YMapMarker,
                 } = reactify.module(ymaps3);
                 const { YMapZoomControl, YMapGeolocationControl } = reactify.module(
                     await ymaps3.import('@yandex/ymaps3-controls@0.0.1')
                 );
+                // const { YMapDefaultMarker } = reactify.module(
+                //     await ymaps3.import('@yandex/ymaps3-markers@0.0.1')
+                // );
 
                 setYMaps(() => (
                     <YMap
-                        location={{
-                            center: [37.623082, 55.75254],
-                            zoom: 9,
-                        }}
+                        location={rootStore.mapLocation}
                         camera={{ tilt: 0, azimuth: 0, duration: 0 }}
                         ref={map}
                     >
@@ -46,11 +55,19 @@ const Departments = () => {
                             <YMapGeolocationControl />
                         </YMapControls>
 
-                        <YMapMarker coordinates={[37.623082, 55.75254]} draggable={true}>
-                            <section>
-                                <p>Этот заголовок можно перетаскивать</p>
-                            </section>
-                        </YMapMarker>
+                        {rootStore.departments.map((department) => (
+                            <YMapMarker
+                                key={department._id}
+                                coordinates={[
+                                    department.Location.Coordinates.longitude,
+                                    department.Location.Coordinates.latitude,
+                                ]}
+                                draggable={false}
+                                position={'center'}
+                            >
+                                <OfficeMarker department={department} />
+                            </YMapMarker>
+                        ))}
                     </YMap>
                 ));
             } catch (e) {
@@ -62,6 +79,6 @@ const Departments = () => {
     }, []);
 
     return <div style={{ width: '100%', height: '100vh' }}>{YMaps}</div>;
-};
+});
 
 export default Departments;
