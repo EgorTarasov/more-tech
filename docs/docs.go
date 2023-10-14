@@ -525,6 +525,11 @@ const docTemplate = `{
         },
         "model.TicketCreateRequest": {
             "type": "object",
+            "required": [
+                "departmentId",
+                "timeSlot",
+                "userId"
+            ],
             "properties": {
                 "departmentId": {
                     "type": "string",
@@ -546,6 +551,10 @@ const docTemplate = `{
                 "_id": {
                     "type": "string",
                     "example": "5f9e3b4e1d9eaf1f3125fc3f"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
                 },
                 "departmentId": {
                     "type": "string",

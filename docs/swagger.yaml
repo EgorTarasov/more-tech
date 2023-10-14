@@ -130,11 +130,18 @@ definitions:
       userId:
         example: 5f9e3b4e1d9eaf1f3125fc3f
         type: string
+    required:
+    - departmentId
+    - timeSlot
+    - userId
     type: object
   model.TicketResponse:
     properties:
       _id:
         example: 5f9e3b4e1d9eaf1f3125fc3f
+        type: string
+      createdAt:
+        example: "2021-01-01T00:00:00Z"
         type: string
       departmentId:
         example: 5f9e3b4e1d9eaf1f3125fc3f
