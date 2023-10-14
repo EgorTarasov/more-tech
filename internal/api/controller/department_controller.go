@@ -93,12 +93,12 @@ func (dc *departmentController) GetDepartmentById(c *gin.Context) {
 //	@Failure		422				{object}	model.ErrorResponse	"Unprocessable entity"
 //	@Router			/v1/departments [post]
 func (dc *departmentController) GetDepartmentByRange(c *gin.Context) {
-	userId, err := c.Cookie("session")
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
-		return
-	}
-
+	// userId, err := c.Cookie("session")
+	// if err != nil {
+	// 	c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
+	// 	return
+	// }
+	userId := "1"
 	departmentData := model.DepartmentRangeRequest{}
 	if err := c.BindJSON(&departmentData); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, model.ErrorResponse{Message: err.Error()})
