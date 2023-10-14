@@ -1,0 +1,636 @@
+definitions:
+  model.Coordinates:
+    properties:
+      latitude:
+        example: 55.892334
+        type: number
+      longitude:
+        example: 37.44055
+        type: number
+    type: object
+  model.Department:
+    properties:
+      _id:
+        example: 65298f171d9eaf1f3125fc41
+        type: string
+      Biskvit_id:
+        example: "5010"
+        type: string
+      address:
+        example: Московская область, г. Химки, ул. Пролетарская, д. 8, стр. 1
+        type: string
+      availableNow:
+        type: boolean
+      city:
+        example: Химки
+        type: string
+      coordinates:
+        $ref: '#/definitions/model.Coordinates'
+      estimatedTimeCar:
+        type: number
+      estimatedTimeWalk:
+        type: number
+      favourite:
+        example: false
+        type: boolean
+      id:
+        example: 29000262
+        type: integer
+      location:
+        $ref: '#/definitions/model.Location'
+      scheduleFl:
+        example: 'пн-пт: 10:00-20:00 сб: 10:00-17:00 вс: выходной'
+        type: string
+      scheduleJurL:
+        example: 'пн-чт: 10:00-19:00 пт: 10:00-18:00 сб, вс: выходной'
+        type: string
+      shortName:
+        example: ДО «ЦИК «Химки-Правобережный» Филиала № 7701 Банка ВТБ (ПАО)
+        type: string
+      special:
+        $ref: '#/definitions/model.Special'
+      workload:
+        description: историческое
+        items:
+          $ref: '#/definitions/model.Workload'
+        type: array
+    type: object
+  model.DepartmentRangeRequest:
+    properties:
+      latitude:
+        example: 55.892334
+        type: number
+      longitude:
+        example: 37.44055
+        type: number
+      radius:
+        description: in km
+        example: 10
+        type: number
+    required:
+    - latitude
+    - longitude
+    - radius
+    type: object
+  model.DepartmentRating:
+    properties:
+      departmentId:
+        type: string
+      rating:
+        type: number
+      text:
+        type: string
+    required:
+    - departmentId
+    - rating
+    - text
+    type: object
+  model.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  model.HourWorkload:
+    properties:
+      hour:
+        example: 10:0-11:0
+        type: string
+      load:
+        example: 0.3256373598976446
+        type: number
+    type: object
+  model.Location:
+    properties:
+      coordinates:
+        $ref: '#/definitions/model.Coordinates'
+      type:
+        example: Point
+        type: string
+    type: object
+  model.Search:
+    properties:
+      _id:
+        example: 5f9e9b9b9b9b9b9b9b9b9b9b
+        type: string
+      atm:
+        type: boolean
+      coordinates:
+        $ref: '#/definitions/model.Coordinates'
+      createdAt:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      online:
+        type: boolean
+      special:
+        $ref: '#/definitions/model.SearchSpecial'
+      text:
+        example: текст запроса
+        type: string
+      userId:
+        example: 5f9e9b9b9b9b9b9b9b889b9b
+        type: string
+    required:
+    - atm
+    - coordinates
+    - createdAt
+    - online
+    - special
+    - text
+    - userId
+    type: object
+  model.SearchCreate:
+    properties:
+      coordinates:
+        $ref: '#/definitions/model.Coordinates'
+      test:
+        example: true
+        type: boolean
+      text:
+        example: текст запроса
+        type: string
+    required:
+    - coordinates
+    - text
+    type: object
+  model.SearchSpecial:
+    properties:
+      Prime:
+        example: false
+        type: boolean
+      juridical:
+        example: true
+        type: boolean
+      person:
+        example: true
+        type: boolean
+      ramp:
+        example: true
+        type: boolean
+      vipOffice:
+        example: false
+        type: boolean
+      vipZone:
+        example: true
+        type: boolean
+    type: object
+  model.Special:
+    properties:
+      Prime:
+        example: 0
+        type: integer
+      juridical:
+        example: 1
+        type: integer
+      person:
+        example: 1
+        type: integer
+      ramp:
+        example: 1
+        type: integer
+      vipOffice:
+        example: 0
+        type: integer
+      vipZone:
+        example: 1
+        type: integer
+    type: object
+  model.Ticket:
+    properties:
+      _id:
+        example: 5f9e3b4e1d9eaf1f3asdfc3f
+        type: string
+      createdAt:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      departmentId:
+        example: 5f9e3b4eknjeaf1f3125fc3f
+        type: string
+      description:
+        type: string
+      duration:
+        type: number
+      timeSlot:
+        example: 12:00-13:00
+        type: string
+      userId:
+        example: 5f9e3b4e1d9jnh1f3125fc3f
+        type: string
+    type: object
+  model.TicketCreate:
+    properties:
+      departmentId:
+        example: 5f9e3b4e1d9eaf1f3125fc3f
+        type: string
+      description:
+        type: string
+      duration:
+        type: number
+      startLatitude:
+        type: number
+      startLongitude:
+        type: number
+      timeSlot:
+        example: 12:00-13:00
+        type: string
+    required:
+    - departmentId
+    type: object
+  model.Workload:
+    properties:
+      day:
+        example: пн
+        type: string
+      loadHours:
+        items:
+          $ref: '#/definitions/model.HourWorkload'
+        type: array
+    type: object
+info:
+  contact: {}
+  description: More Tech API server
+  title: More Tech API
+  version: 0.0.1
+paths:
+  /v1/departments:
+    post:
+      consumes:
+      - application/json
+      description: Get department by range
+      parameters:
+      - description: Department range request
+        in: body
+        name: departmentData
+        required: true
+        schema:
+          $ref: '#/definitions/model.DepartmentRangeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Department'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get department by range
+      tags:
+      - department
+  /v1/departments/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get department by id
+      parameters:
+      - description: Department ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Start latitude
+        in: query
+        name: startLatitude
+        required: true
+        type: string
+      - description: Start longitude
+        in: query
+        name: startLongitude
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Department'
+        "404":
+          description: Department not found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get department by id
+      tags:
+      - department
+  /v1/departments/favourite:
+    get:
+      consumes:
+      - application/json
+      description: Get favourite departments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Department'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get favourite departments
+      tags:
+      - department
+  /v1/departments/favourite/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes department from favourites
+      parameters:
+      - description: Department ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted from favourites
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Deletes department from favourites
+      tags:
+      - department
+    post:
+      consumes:
+      - application/json
+      description: Add department to favourites
+      parameters:
+      - description: Department ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Added to favourites
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Add department to favourites
+      tags:
+      - department
+  /v1/departments/rating:
+    post:
+      consumes:
+      - application/json
+      description: Add department rating
+      parameters:
+      - description: Department rating
+        in: body
+        name: ratingData
+        required: true
+        schema:
+          $ref: '#/definitions/model.DepartmentRating'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Rating added
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Add department rating
+      tags:
+      - department
+  /v1/search:
+    post:
+      consumes:
+      - application/json
+      description: Create a new search record
+      parameters:
+      - description: Search
+        in: body
+        name: search
+        required: true
+        schema:
+          $ref: '#/definitions/model.SearchCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Search
+          schema:
+            $ref: '#/definitions/model.Search'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Create a new search record
+      tags:
+      - search
+  /v1/search/{searchId}:
+    get:
+      consumes:
+      - application/json
+      description: Get search record by id
+      parameters:
+      - description: Search id
+        in: path
+        name: searchId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Search
+          schema:
+            $ref: '#/definitions/model.Search'
+        "404":
+          description: Search not found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get search record by id
+      tags:
+      - search
+  /v1/search/user:
+    get:
+      consumes:
+      - application/json
+      description: Get search records for user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Searches
+          schema:
+            items:
+              $ref: '#/definitions/model.Search'
+            type: array
+        "404":
+          description: Searches not found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get search records for user
+      tags:
+      - search
+  /v1/tickets:
+    post:
+      consumes:
+      - application/json
+      description: Create a new ticket
+      parameters:
+      - description: Ticket
+        in: body
+        name: ticket
+        required: true
+        schema:
+          $ref: '#/definitions/model.TicketCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Ticket id
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Create a new ticket
+      tags:
+      - tickets
+  /v1/tickets/{ticketId}:
+    delete:
+      consumes:
+      - application/json
+      description: Cancel ticket
+      parameters:
+      - description: Ticket id
+        in: path
+        name: ticketId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Cancel ticket
+      tags:
+      - tickets
+    get:
+      consumes:
+      - application/json
+      description: Get ticket by id
+      parameters:
+      - description: Ticket id
+        in: path
+        name: ticketId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ticket
+          schema:
+            $ref: '#/definitions/model.Ticket'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get ticket by id
+      tags:
+      - tickets
+  /v1/tickets/department/{departmentId}:
+    get:
+      consumes:
+      - application/json
+      description: Get all tickets for department
+      parameters:
+      - description: Department id
+        in: path
+        name: departmentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Tickets
+          schema:
+            items:
+              $ref: '#/definitions/model.Ticket'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get all tickets for department
+      tags:
+      - tickets
+  /v1/tickets/user:
+    get:
+      consumes:
+      - application/json
+      description: Get all tickets for user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Tickets
+          schema:
+            items:
+              $ref: '#/definitions/model.Ticket'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get all tickets for user
+      tags:
+      - tickets
+swagger: "2.0"

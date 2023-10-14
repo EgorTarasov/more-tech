@@ -9,7 +9,7 @@ RUN go mod download
 COPY cmd/ ./cmd/
 COPY docs ./docs/
 COPY internal/ ./internal/
-COPY .env .
+# COPY ../.env .
 
 RUN go build -o ./main ./cmd/server/main.go
 

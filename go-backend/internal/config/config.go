@@ -2,8 +2,6 @@ package config
 
 import (
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -21,9 +19,9 @@ type Config struct {
 var Cfg *Config
 
 func NewConfig() error {
-	if err := godotenv.Load(); err != nil {
-		return err
-	}
+	// if err := godotenv.Load(); err != nil {
+	// 	return err
+	// }
 	Cfg = &Config{
 		MongoUser:                     os.Getenv("MONGO_INITDB_ROOT_USERNAME"),
 		MongoPassword:                 os.Getenv("MONGO_INITDB_ROOT_PASSWORD"),

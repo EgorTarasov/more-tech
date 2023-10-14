@@ -7,7 +7,7 @@ export class DepartmentsApiService {
         const response = await axios.post<IDepartment[]>(`${API_URL}/v1/departments`, {
             latitude: 55.755864,
             longitude: 37.617698,
-            radius: 3,
+            radius: 50,
         });
 
         return response.data;

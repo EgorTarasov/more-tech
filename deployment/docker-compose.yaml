@@ -13,8 +13,8 @@ services:
 
     backend:
         build:
-            context: ../.
-            dockerfile: deployment/Dockerfile
+            context: ../go-backend/
+            dockerfile: Dockerfile
         restart: always
         environment:
             - DOCKER_MODE=1
