@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -17,6 +18,7 @@ type TicketResponse struct {
 	UserId       string `json:"userId" bson:"userId" example:"5f9e3b4e1d9eaf1f3125fc3f"`
 	DepartmentId string `json:"departmentId" bson:"departmentId" example:"5f9e3b4e1d9eaf1f3125fc3f"`
 	TimeSlot     string `json:"timeSlot" bson:"timeSlot" example:"2020-11-02T10:00:00.000Z"`
+	CreatedAt time.Time `json:"createdAt" bson:"createdAt" example:"2021-01-01T00:00:00Z"`
 }
 
 type TicketRepository interface {

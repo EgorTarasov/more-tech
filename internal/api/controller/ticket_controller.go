@@ -12,13 +12,11 @@ import (
 
 type ticketController struct {
 	tr model.TicketRepository
-	dr model.DepartmentRepository
 }
 
-func NewTicketController(tr model.TicketRepository, dr model.DepartmentRepository) *ticketController {
+func NewTicketController(tr model.TicketRepository) *ticketController {
 	return &ticketController{
 		tr: tr,
-		dr: dr,
 	}
 }
 

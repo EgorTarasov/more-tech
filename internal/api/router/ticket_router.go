@@ -10,9 +10,7 @@ import (
 
 func (r *router) setupTicketRoutes(group *gin.RouterGroup) {
 	ticketRepo := repository.NewTicketMongoRepository(r.mongoClient.Database(config.Cfg.MongoDb))
-	departmentRepo := repository.NewDepartmentMongoRepository(r.mongoClient.Database(config.Cfg.MongoDb))
-
-	tc := controller.NewTicketController(ticketRepo, departmentRepo)
+	tc := controller.NewTicketController(ticketRepo)
 
 	tickets := group.Group("/tickets")
 	tickets.GET("/department/:departmentId", tc.GetTicketsForDepartment)

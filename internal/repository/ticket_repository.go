@@ -4,6 +4,7 @@ import (
 	"context"
 	"more-tech/internal/logging"
 	"more-tech/internal/model"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -23,7 +24,12 @@ func NewTicketMongoRepository(mongoDb *mongo.Database) model.TicketRepository {
 }
 
 func (tr *ticketMongoRepository) InsertOne(c context.Context, ticketData model.TicketCreateRequest) (string, error) {
-	res, err := tr.db.Collection(tr.collection).InsertOne(c, ticketData)
+	res, err := tr.db.Collection(tr.collection).InsertOne(c, bson.M{
+		"userId":       ticketData.UserId,
+		"departmentId": ticketData.DepartmentId,
+		"timeSlot":     ticketData.TimeSlot,
+		"createdAt":    time.Now(),
+	})
 	return res.InsertedID.(primitive.ObjectID).Hex(), err
 }
 
