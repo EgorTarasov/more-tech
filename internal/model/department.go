@@ -20,6 +20,7 @@ type Department struct {
 	Coordinates  Coordinates `json:"coordinates"`
 	Location     Location    `json:"location"`
 	Workload     []Workload  `json:"workload"` // историческое
+	Favourite    bool        `json:"favourite" example:"true" default:"false"`
 }
 
 type Special struct {
@@ -67,9 +68,11 @@ type DepartmentRangeResponse struct {
 	Rating       float64  `json:"rating" example:"4.2"`
 	Special      Special  `json:"special"`
 	Location     Location `json:"location"`
+	Favourite    bool     `json:"favourite" example:"true" default:"false"`
 }
 
 type DepartmentRepository interface {
 	FindOne(c context.Context, filter bson.M) (*Department, error)
-	FindMany(c context.Context, departmentData DepartmentRangeRequest) ([]DepartmentRangeResponse, error)
+	FindMany(c context.Context, filter bson.M) ([]Department, error)
+	FindRange(c context.Context, departmentData DepartmentRangeRequest) ([]DepartmentRangeResponse, error)
 }

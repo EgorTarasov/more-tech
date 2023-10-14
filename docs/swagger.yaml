@@ -24,6 +24,10 @@ definitions:
         type: string
       coordinates:
         $ref: '#/definitions/model.Coordinates'
+      favourite:
+        default: false
+        example: true
+        type: boolean
       id:
         example: 29000262
         type: integer
@@ -98,21 +102,7 @@ definitions:
         example: Point
         type: string
     type: object
-  model.SearchCreate:
-    properties:
-      coordinates:
-        $ref: '#/definitions/model.Coordinates'
-      test:
-        example: true
-        type: boolean
-      text:
-        example: текст запроса
-        type: string
-    required:
-    - coordinates
-    - text
-    type: object
-  model.SearchResponse:
+  model.Search:
     properties:
       _id:
         example: 5f9e9b9b9b9b9b9b9b9b9b9b
@@ -142,6 +132,20 @@ definitions:
     - special
     - text
     - userId
+    type: object
+  model.SearchCreate:
+    properties:
+      coordinates:
+        $ref: '#/definitions/model.Coordinates'
+      test:
+        example: true
+        type: boolean
+      text:
+        example: текст запроса
+        type: string
+    required:
+    - coordinates
+    - text
     type: object
   model.SearchSpecial:
     properties:
@@ -288,6 +292,63 @@ paths:
       summary: Get department by id
       tags:
       - department
+  /v1/departments/favourite/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes department from favourites
+      parameters:
+      - description: Department ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted from favourites
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Deletes department from favourites
+      tags:
+      - department
+    post:
+      consumes:
+      - application/json
+      description: Add department to favourites
+      parameters:
+      - description: Department ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Added to favourites
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Add department to favourites
+      tags:
+      - department
   /v1/departments/rating:
     post:
       consumes:
@@ -334,9 +395,9 @@ paths:
       - application/json
       responses:
         "201":
-          description: Search id
+          description: Search
           schema:
-            type: string
+            $ref: '#/definitions/model.Search'
         "400":
           description: Bad Request
           schema:
@@ -365,7 +426,7 @@ paths:
         "200":
           description: Search
           schema:
-            $ref: '#/definitions/model.SearchResponse'
+            $ref: '#/definitions/model.Search'
         "404":
           description: Search not found
           schema:
@@ -385,7 +446,7 @@ paths:
           description: Searches
           schema:
             items:
-              $ref: '#/definitions/model.SearchResponse'
+              $ref: '#/definitions/model.Search'
             type: array
         "404":
           description: Searches not found

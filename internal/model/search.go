@@ -14,16 +14,6 @@ type SearchCreate struct {
 }
 
 type Search struct {
-	Text        string        `json:"text" bson:"text" binding:"required" example:"текст запроса"`
-	UserId      string        `json:"userId" bson:"userId" binding:"required" example:"5f9e9b9b9b9b9b9b9b889b9b"`
-	Coordinates Coordinates   `json:"coordinates" bson:"coordinates" binding:"required"`
-	CreatedAt   time.Time     `json:"createdAt,omitempty" bson:"createdAt" example:"2021-01-01T00:00:00Z"`
-	Special     SearchSpecial `json:"special" bson:"special" binding:"required"`
-	Atm         bool          `json:"atm" bson:"atm" binding:"required"`
-	Online      bool          `json:"online" bson:"online" binding:"required"`
-}
-
-type SearchResponse struct {
 	Id          string        `json:"_id" bson:"_id" example:"5f9e9b9b9b9b9b9b9b9b9b9b"`
 	Text        string        `json:"text" bson:"text" binding:"required" example:"текст запроса"`
 	UserId      string        `json:"userId" bson:"userId" binding:"required" example:"5f9e9b9b9b9b9b9b9b889b9b"`
@@ -45,8 +35,8 @@ type SearchSpecial struct {
 
 type SearchRepository interface {
 	InsertOne(c context.Context, searchData Search) (string, error)
-	FindOne(c context.Context, searchId string) (*SearchResponse, error)
-	FindMany(c context.Context, filter bson.M) ([]SearchResponse, error)
+	FindOne(c context.Context, searchId string) (*Search, error)
+	FindMany(c context.Context, filter bson.M) ([]Search, error)
 }
 
 //     "банкомат": atm,

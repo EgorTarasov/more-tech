@@ -11,10 +11,14 @@ import (
 func (r *router) setupDepartmentRoutes(group *gin.RouterGroup) {
 	departmentRepo := repository.NewDepartmentMongoRepository(r.mongoClient.Database(config.Cfg.MongoDb))
 	ratingRepo := repository.NewRatingMongoRepository(r.mongoClient.Database(config.Cfg.MongoDb))
-	dc := controller.NewDepartmentController(departmentRepo, ratingRepo)
+	favouriteRepo := repository.NewFavouriteMongoRepository(r.mongoClient.Database(config.Cfg.MongoDb))
+	dc := controller.NewDepartmentController(departmentRepo, ratingRepo, favouriteRepo)
 
 	departments := group.Group("/departments")
 	departments.GET("/:id", dc.GetDepartmentById)
 	departments.POST("", dc.GetDepartmentByRange)
 	departments.POST("/rating", dc.AddDepartmentRating)
+	departments.GET("/favourite/", dc.GetFavouriteDepartments)
+	departments.POST("/favourite/:id", dc.AddDepartmentToFavourites)
+	departments.DELETE("/favourite/:id", dc.DeleteDepartmentFromFavourites)
 }

@@ -33,7 +33,22 @@ func (dr *departmentMongoRepository) FindOne(c context.Context, filter bson.M) (
 	return &department, nil
 }
 
-func (dr *departmentMongoRepository) FindMany(c context.Context, departmentData model.DepartmentRangeRequest) ([]model.DepartmentRangeResponse, error) {
+func (dr *departmentMongoRepository) FindMany(c context.Context, filter bson.M) ([]model.Department, error) {
+	var departments []model.Department
+
+	cursor, err := dr.db.Collection(dr.collection).Find(c, filter)
+	if err != nil {
+		return nil, err
+	}
+	err = cursor.All(c, &departments)
+	if err != nil {
+		return nil, err
+	}
+
+	return departments, nil
+}
+
+func (dr *departmentMongoRepository) FindRange(c context.Context, departmentData model.DepartmentRangeRequest) ([]model.DepartmentRangeResponse, error) {
 	var departments []model.DepartmentRangeResponse
 
 	cursor, err := dr.db.Collection(dr.collection).Find(c, bson.M{

@@ -61,13 +61,13 @@ func (uc *userController) CreateUser(c *gin.Context) {
 func (uc *userController) GetUserById(c *gin.Context) {
 	id := c.Param("id")
 
-	hex_id, err := primitive.ObjectIDFromHex(id)
+	hexId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	user, err := uc.repository.FindOne(c.Request.Context(), bson.M{"_id": hex_id})
+	user, err := uc.repository.FindOne(c.Request.Context(), bson.M{"_id": hexId})
 	if errors.Is(err, mongo.ErrNoDocuments) {
 		c.JSON(http.StatusNotFound, model.ErrorResponse{Message: "user not found"})
 		return

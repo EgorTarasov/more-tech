@@ -32,11 +32,12 @@ func NewSearchController(sr model.SearchRepository, mlHost string) *searchContro
 //	@Accept			json
 //	@Produce		json
 //	@Param			search	body		model.SearchCreate	true	"Search"
-//	@Success		201		{object}	string				"Search id"
+//	@Success		201		{object}	model.Search		"Search"
 //	@Failure		400		{object}	model.ErrorResponse	"Bad Request"
 //	@Failure		422		{object}	model.ErrorResponse	"Unprocessable Entity"
 //	@Router			/v1/search [post]
 func (sc *searchController) CreateSearchRecord(c *gin.Context) {
+	// TODO: return SearchRecord
 	searchData := model.SearchCreate{}
 	if err := c.BindJSON(&searchData); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, model.ErrorResponse{Message: err.Error()})
@@ -78,8 +79,9 @@ func (sc *searchController) CreateSearchRecord(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
 		return
 	}
+	search.Id = searchId
 
-	c.JSON(http.StatusCreated, searchId)
+	c.JSON(http.StatusCreated, search)
 }
 
 // GetSearchRecordById godoc
@@ -89,9 +91,9 @@ func (sc *searchController) CreateSearchRecord(c *gin.Context) {
 //	@Tags			search
 //	@Accept			json
 //	@Produce		json
-//	@Param			searchId	path		string					true	"Search id"
-//	@Success		200			{object}	model.SearchResponse	"Search"
-//	@Failure		404			{object}	model.ErrorResponse		"Search not found"
+//	@Param			searchId	path		string				true	"Search id"
+//	@Success		200			{object}	model.Search		"Search"
+//	@Failure		404			{object}	model.ErrorResponse	"Search not found"
 //	@Router			/v1/search/{searchId} [get]
 func (sc *searchController) GetSearchRecordById(c *gin.Context) {
 	searchId := c.Param("searchId")
@@ -112,8 +114,8 @@ func (sc *searchController) GetSearchRecordById(c *gin.Context) {
 //	@Tags			search
 //	@Accept			json
 //	@Produce		json
-//	@Success		200	{object}	[]model.SearchResponse	"Searches"
-//	@Failure		404	{object}	model.ErrorResponse		"Searches not found"
+//	@Success		200	{object}	[]model.Search		"Searches"
+//	@Failure		404	{object}	model.ErrorResponse	"Searches not found"
 //	@Router			/v1/search/user [get]
 func (sc *searchController) GetSearchRecordsForUser(c *gin.Context) {
 	userId, err := c.Cookie("session")

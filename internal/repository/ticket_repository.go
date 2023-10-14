@@ -34,14 +34,14 @@ func (tr *ticketMongoRepository) InsertOne(c context.Context, ticketData model.T
 }
 
 func (tr *ticketMongoRepository) FindOne(c context.Context, ticketId string) (*model.Ticket, error) {
-	hex_id, err := primitive.ObjectIDFromHex(ticketId)
+	hexId, err := primitive.ObjectIDFromHex(ticketId)
 	if err != nil {
 		return nil, err
 	}
 
 	ticket := model.Ticket{}
 
-	err = tr.db.Collection(tr.collection).FindOne(c, bson.M{"_id": hex_id}).Decode(&ticket)
+	err = tr.db.Collection(tr.collection).FindOne(c, bson.M{"_id": hexId}).Decode(&ticket)
 	if err != nil {
 		return nil, err
 	}
@@ -72,12 +72,12 @@ func (tr *ticketMongoRepository) Count(c context.Context, filter bson.M) (int64,
 }
 
 func (tr *ticketMongoRepository) DeleteOne(c context.Context, ticketId string) error {
-	hex_id, err := primitive.ObjectIDFromHex(ticketId)
+	hexId, err := primitive.ObjectIDFromHex(ticketId)
 	if err != nil {
 		return err
 	}
 
-	res, err := tr.db.Collection(tr.collection).DeleteOne(c, bson.M{"_id": hex_id})
+	res, err := tr.db.Collection(tr.collection).DeleteOne(c, bson.M{"_id": hexId})
 	if res.DeletedCount == 0 {
 		return mongo.ErrNoDocuments
 	}

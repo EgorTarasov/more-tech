@@ -22,19 +22,27 @@ func NewSearchMongoRepository(mongoDb *mongo.Database) model.SearchRepository {
 }
 
 func (sr *searchMongoRepository) InsertOne(c context.Context, searchData model.Search) (string, error) {
-	res, err := sr.db.Collection(sr.collection).InsertOne(c, searchData)
+	res, err := sr.db.Collection(sr.collection).InsertOne(c, bson.M{
+		"text":        searchData.Text,
+		"userId":      searchData.UserId,
+		"coordinates": searchData.Coordinates,
+		"createdAt":   searchData.CreatedAt,
+		"special":     searchData.Special,
+		"atm":         searchData.Atm,
+		"online":      searchData.Online,
+	})
 	return res.InsertedID.(primitive.ObjectID).Hex(), err
 }
 
-func (sr *searchMongoRepository) FindOne(c context.Context, searchId string) (*model.SearchResponse, error) {
-	hex_id, err := primitive.ObjectIDFromHex(searchId)
+func (sr *searchMongoRepository) FindOne(c context.Context, searchId string) (*model.Search, error) {
+	hexId, err := primitive.ObjectIDFromHex(searchId)
 	if err != nil {
 		return nil, err
 	}
 
-	search := model.SearchResponse{}
+	search := model.Search{}
 
-	err = sr.db.Collection(sr.collection).FindOne(c, bson.M{"_id": hex_id}).Decode(&search)
+	err = sr.db.Collection(sr.collection).FindOne(c, bson.M{"_id": hexId}).Decode(&search)
 	if err != nil {
 		return nil, err
 	}
@@ -42,8 +50,8 @@ func (sr *searchMongoRepository) FindOne(c context.Context, searchId string) (*m
 	return &search, nil
 }
 
-func (dr *searchMongoRepository) FindMany(c context.Context, filter bson.M) ([]model.SearchResponse, error) {
-	var searches []model.SearchResponse
+func (dr *searchMongoRepository) FindMany(c context.Context, filter bson.M) ([]model.Search, error) {
+	var searches []model.Search
 
 	cursor, err := dr.db.Collection(dr.collection).Find(c, filter)
 	if err != nil {

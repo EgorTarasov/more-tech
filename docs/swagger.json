@@ -56,6 +56,92 @@
                 }
             }
         },
+        "/v1/departments/favourite/{id}": {
+            "post": {
+                "description": "Add department to favourites",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "department"
+                ],
+                "summary": "Add department to favourites",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Department ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Added to favourites",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable entity",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes department from favourites",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "department"
+                ],
+                "summary": "Deletes department from favourites",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Department ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted from favourites",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/departments/rating": {
             "post": {
                 "description": "Add department rating",
@@ -166,9 +252,9 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "Search id",
+                        "description": "Search",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/model.Search"
                         }
                     },
                     "400": {
@@ -205,7 +291,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.SearchResponse"
+                                "$ref": "#/definitions/model.Search"
                             }
                         }
                     },
@@ -244,7 +330,7 @@
                     "200": {
                         "description": "Search",
                         "schema": {
-                            "$ref": "#/definitions/model.SearchResponse"
+                            "$ref": "#/definitions/model.Search"
                         }
                     },
                     "404": {
@@ -486,6 +572,11 @@
                 "coordinates": {
                     "$ref": "#/definitions/model.Coordinates"
                 },
+                "favourite": {
+                    "type": "boolean",
+                    "default": false,
+                    "example": true
+                },
                 "id": {
                     "type": "integer",
                     "example": 29000262
@@ -592,27 +683,7 @@
                 }
             }
         },
-        "model.SearchCreate": {
-            "type": "object",
-            "required": [
-                "coordinates",
-                "text"
-            ],
-            "properties": {
-                "coordinates": {
-                    "$ref": "#/definitions/model.Coordinates"
-                },
-                "test": {
-                    "type": "boolean",
-                    "example": true
-                },
-                "text": {
-                    "type": "string",
-                    "example": "текст запроса"
-                }
-            }
-        },
-        "model.SearchResponse": {
+        "model.Search": {
             "type": "object",
             "required": [
                 "atm",
@@ -651,6 +722,26 @@
                 "userId": {
                     "type": "string",
                     "example": "5f9e9b9b9b9b9b9b9b889b9b"
+                }
+            }
+        },
+        "model.SearchCreate": {
+            "type": "object",
+            "required": [
+                "coordinates",
+                "text"
+            ],
+            "properties": {
+                "coordinates": {
+                    "$ref": "#/definitions/model.Coordinates"
+                },
+                "test": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "text": {
+                    "type": "string",
+                    "example": "текст запроса"
                 }
             }
         },
