@@ -53,7 +53,7 @@ class Request(BaseModel):
         ..., examples=[{"latitude": 55.755864, "longitude": 37.617698}]
     )
     text: str = Field(..., examples=["Хочу снять наличные с моей кредитной карты."])
-    test: bool = Field(..., examples=[True])
+    test: bool = Field(False, examples=[True])
 
 
 class Special(BaseModel):
