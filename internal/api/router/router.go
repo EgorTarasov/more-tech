@@ -36,7 +36,7 @@ func (r *router) setup() {
 	if config.Cfg.DockerMode {
 		domain = "larek.itatmisis.ru:9999"
 		mlHost = "ml"
-		routeHost = "route"
+		routeHost = "larek.itatmisis.ru:10000"
 	} else {
 		domain = "localhost"
 		mlHost = "localhost"
