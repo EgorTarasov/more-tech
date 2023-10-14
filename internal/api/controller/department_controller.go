@@ -65,15 +65,16 @@ func (dc *departmentController) GetDepartmentById(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
+	if favourite != nil {
 
-	favouriteSet := make(map[string]struct{})
-	for _, departmentId := range favourite.DepartmentIds {
-		favouriteSet[departmentId] = struct{}{}
+		favouriteSet := make(map[string]struct{})
+		for _, departmentId := range favourite.DepartmentIds {
+			favouriteSet[departmentId] = struct{}{}
+		}
+		if _, ok := favouriteSet[id]; ok {
+			department.Favourite = true
+		}
 	}
-	if _, ok := favouriteSet[id]; ok {
-		department.Favourite = true
-	}
-
 	c.JSON(http.StatusOK, department)
 }
 
@@ -107,8 +108,11 @@ func (dc *departmentController) GetDepartmentByRange(c *gin.Context) {
 		return
 	}
 	favouriteSet := make(map[string]struct{})
-	for _, departmentId := range favourite.DepartmentIds {
-		favouriteSet[departmentId] = struct{}{}
+	if favourite != nil {
+
+		for _, departmentId := range favourite.DepartmentIds {
+			favouriteSet[departmentId] = struct{}{}
+		}
 	}
 
 	departments, err := dc.dr.FindRange(c.Request.Context(), departmentData)
@@ -126,8 +130,10 @@ func (dc *departmentController) GetDepartmentByRange(c *gin.Context) {
 			avgRating /= float64(len(ratings))
 		}
 		departments[i].Rating = avgRating
-		if _, ok := favouriteSet[departments[i].MongoId]; ok {
-			departments[i].Favourite = true
+		if favourite != nil {
+			if _, ok := favouriteSet[departments[i].MongoId]; ok {
+				departments[i].Favourite = true
+			}
 		}
 
 	}
