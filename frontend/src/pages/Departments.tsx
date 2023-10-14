@@ -17,7 +17,24 @@ const Departments = observer(() => {
             await rootStore.fetchUser();
             await rootStore.fetchDepartments();
         }
-        fetchDepartments();
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (geo: GeolocationPosition) => {
+                    rootStore.setStart([geo.coords.longitude, geo.coords.latitude]);
+                    rootStore.setMapLocation({
+                        ...rootStore.mapLocation,
+                        center: [geo.coords.longitude, geo.coords.latitude],
+                    });
+
+                    fetchDepartments();
+                },
+                (error) => {
+                    console.log(error);
+                    fetchDepartments();
+                }
+            );
+        }
     }, [rootStore]);
 
     useEffect(() => {
@@ -44,9 +61,9 @@ const Departments = observer(() => {
                 const { YMapZoomControl, YMapGeolocationControl } = reactify.module(
                     await ymaps3.import('@yandex/ymaps3-controls@0.0.1')
                 );
-                // const { YMapDefaultMarker } = reactify.module(
-                //     await ymaps3.import('@yandex/ymaps3-markers@0.0.1')
-                // );
+                const { YMapDefaultMarker } = reactify.module(
+                    await ymaps3.import('@yandex/ymaps3-markers@0.0.1')
+                );
 
                 setYMaps(() => (
                     <YMap
@@ -77,6 +94,7 @@ const Departments = observer(() => {
                                 </YMapMarker>
                             );
                         })}
+                        <YMapDefaultMarker coordinates={[rootStore.start[0], rootStore.start[1]]} />
                         <YMapFeature {...rootStore.polylyne} />
                     </YMap>
                 ));

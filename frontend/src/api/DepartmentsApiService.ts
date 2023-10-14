@@ -3,11 +3,11 @@ import { API_URL } from '../config';
 import { IDepartment, IDepartmentDetails } from './models';
 
 export class DepartmentsApiService {
-    public async getDepartments(): Promise<IDepartment[]> {
+    public async getDepartments(latitude: number, longitude: number): Promise<IDepartment[]> {
         const response = await axios.post<IDepartment[]>(`${API_URL}/v1/departments`, {
-            latitude: 55.755864,
-            longitude: 37.617698,
-            radius: 50,
+            latitude,
+            longitude,
+            radius: 20,
         });
 
         return response.data;

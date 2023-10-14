@@ -40,6 +40,7 @@ export class RootStore {
         raitingMoreThan4: null,
         raitingMoreThan45: null,
     };
+    isSearchLoading: boolean = false;
 
     constructor() {
         makeAutoObservable(this, {
@@ -77,6 +78,12 @@ export class RootStore {
     setPolylyne(polylyne: ILineString | null) {
         runInAction(() => {
             this.polylyne = polylyne;
+        });
+    }
+
+    setStart(start: [number, number]) {
+        runInAction(() => {
+            this.start = start;
         });
     }
 
@@ -137,7 +144,10 @@ export class RootStore {
     }
 
     async fetchDepartments() {
-        const departments = await DepartmentsApiServiceInstanse.getDepartments();
+        const departments = await DepartmentsApiServiceInstanse.getDepartments(
+            this.start[1],
+            this.start[0]
+        );
 
         this.setDepartments(departments.sort((a, b) => a.distance - b.distance));
 
@@ -202,6 +212,10 @@ export class RootStore {
     }
 
     async searchML(text: string) {
+        runInAction(() => {
+            this.isSearchLoading = true;
+        });
+
         const {
             special: { Prime, juridical, person, ramp, vipOffice, vipZone },
         } = await CommonApiServiceInstanse.search(text, this.start[1], this.start[0]);
@@ -219,6 +233,7 @@ export class RootStore {
                 raitingMoreThan4: null,
                 raitingMoreThan45: null,
             };
+            this.isSearchLoading = false;
         });
 
         return;

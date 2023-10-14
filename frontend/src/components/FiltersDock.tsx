@@ -135,6 +135,7 @@ const FiltersDock = observer(() => {
                             size='large'
                             onSearch={onSearch}
                             suffix={suffix}
+                            loading={rootStore.isSearchLoading}
                         />
                     </Col>
                 </Row>
