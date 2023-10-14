@@ -15,7 +15,6 @@ openai.api_key = os.getenv("API_KEY")
 
 
 async def predict(user_text: str):
-
     prompt = f"""
 Можешь выделить ключевые слова для TfidfVectorizer из текста?
 у меня есть следующие фильтры (классы):банкомат, онлайн, привелегия, прайм, маломобильный, физ лицо, юр лицо
@@ -81,7 +80,6 @@ class Response(BaseModel):
     _id: str
     atm: bool
     coordinates: Coordinates
-    createdAt: str
     online: bool
     special: Special
     text: str
@@ -111,7 +109,6 @@ async def get_service(data: Request):
                 latitude=0.0,
                 longitude=0.0,
             ),
-            createdAt=datetime.datetime.now().isoformat(),
             online=res["online"],
             special=Special(**res),
             userId="",
@@ -128,8 +125,6 @@ async def get_service(data: Request):
                 latitude=0.0,
                 longitude=0.0,
             ),
-            createdAt=datetime.datetime.now().isoformat(),
-            # 
             online=res["online"],
             special=Special(**res),
             userId="",

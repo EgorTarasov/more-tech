@@ -7,7 +7,7 @@ swag:
 
 # запуск локально, без докера
 debug: swag
-	docker compose -f deployment/docker-compose.yaml up mongo -d 
+	docker compose -f deployment/docker-compose.yaml up ml mongo --build -d 
 	go run cmd/server/main.go
 
 db_load:

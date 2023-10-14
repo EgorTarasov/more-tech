@@ -17,7 +17,7 @@ type Search struct {
 	Text        string        `json:"text" bson:"text" binding:"required" example:"текст запроса"`
 	UserId      string        `json:"userId" bson:"userId" binding:"required" example:"5f9e9b9b9b9b9b9b9b889b9b"`
 	Coordinates Coordinates   `json:"coordinates" bson:"coordinates" binding:"required"`
-	CreatedAt   time.Time     `json:"createdAt" bson:"createdAt" binding:"required" example:"2021-01-01T00:00:00Z"`
+	CreatedAt   time.Time     `json:"createdAt,omitempty" bson:"createdAt" example:"2021-01-01T00:00:00Z"`
 	Special     SearchSpecial `json:"special" bson:"special" binding:"required"`
 	Atm         bool          `json:"atm" bson:"atm" binding:"required"`
 	Online      bool          `json:"online" bson:"online" binding:"required"`
