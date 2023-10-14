@@ -292,6 +292,31 @@ paths:
       summary: Get department by id
       tags:
       - department
+  /v1/departments/favourite:
+    get:
+      consumes:
+      - application/json
+      description: Get favourite departments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Department'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get favourite departments
+      tags:
+      - department
   /v1/departments/favourite/{id}:
     delete:
       consumes:

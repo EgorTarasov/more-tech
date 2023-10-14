@@ -15,10 +15,10 @@ func (r *router) setupDepartmentRoutes(group *gin.RouterGroup) {
 	dc := controller.NewDepartmentController(departmentRepo, ratingRepo, favouriteRepo)
 
 	departments := group.Group("/departments")
+	departments.GET("/favourite", dc.GetFavouriteDepartments)
 	departments.GET("/:id", dc.GetDepartmentById)
 	departments.POST("", dc.GetDepartmentByRange)
 	departments.POST("/rating", dc.AddDepartmentRating)
-	departments.GET("/favourite/", dc.GetFavouriteDepartments)
 	departments.POST("/favourite/:id", dc.AddDepartmentToFavourites)
 	departments.DELETE("/favourite/:id", dc.DeleteDepartmentFromFavourites)
 }

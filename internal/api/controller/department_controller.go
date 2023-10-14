@@ -60,21 +60,23 @@ func (dc *departmentController) GetDepartmentById(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
+
 	favourite, err := dc.fr.FindOne(c.Request.Context(), bson.M{"userId": userId})
-	if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		c.JSON(http.StatusOK, department)
+		return
+	} else if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-	if favourite != nil {
 
-		favouriteSet := make(map[string]struct{})
-		for _, departmentId := range favourite.DepartmentIds {
-			favouriteSet[departmentId] = struct{}{}
-		}
-		if _, ok := favouriteSet[id]; ok {
+	for _, departmentId := range favourite.DepartmentIds {
+		if departmentId == department.MongoId {
 			department.Favourite = true
+			break
 		}
 	}
+
 	c.JSON(http.StatusOK, department)
 }
 
@@ -102,40 +104,49 @@ func (dc *departmentController) GetDepartmentByRange(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-	favourite, err := dc.fr.FindOne(c.Request.Context(), bson.M{"userId": userId})
-	if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
+
+	departments, err := dc.dr.FindRange(c.Request.Context(), departmentData)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-	favouriteSet := make(map[string]struct{})
-	if favourite != nil {
 
-		for _, departmentId := range favourite.DepartmentIds {
-			favouriteSet[departmentId] = struct{}{}
-		}
-	}
-
-	departments, err := dc.dr.FindRange(c.Request.Context(), departmentData)
 	for i := range departments {
 		var ratings []model.DepartmentRating
-		ratings, err = dc.rr.FindMany(c.Request.Context(), bson.M{"department_id": departments[i].MongoId})
+
+		ratings, err = dc.rr.FindMany(c.Request.Context(), bson.M{"departmentId": departments[i].MongoId})
 		if err != nil {
 			break
 		}
+
 		avgRating := 0.0
 		for _, rating := range ratings {
 			avgRating += rating.Rating
 		}
+
 		if len(ratings) > 0 {
 			avgRating /= float64(len(ratings))
 		}
+
 		departments[i].Rating = avgRating
-		if favourite != nil {
-			if _, ok := favouriteSet[departments[i].MongoId]; ok {
-				departments[i].Favourite = true
+	}
+
+	favourite, err := dc.fr.FindOne(c.Request.Context(), bson.M{"userId": userId})
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		c.JSON(http.StatusOK, departments)
+		return
+	} else if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
+		return
+	}
+
+	for idx, department := range departments {
+		for _, departmentId := range favourite.DepartmentIds {
+			if department.MongoId == departmentId {
+				departments[idx].Favourite = true
+				break
 			}
 		}
-
 	}
 
 	if err != nil {
@@ -281,6 +292,7 @@ func (dc *departmentController) DeleteDepartmentFromFavourites(c *gin.Context) {
 //	@Success		200	{object}	[]model.Department
 //	@Failure		400	{object}	model.ErrorResponse
 //	@Failure		422	{object}	model.ErrorResponse
+//	@Router			/v1/departments/favourite [get]
 func (dc *departmentController) GetFavouriteDepartments(c *gin.Context) {
 	userID, err := c.Cookie("session")
 	if err != nil {
