@@ -3,6 +3,7 @@ package controller
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"more-tech/internal/model"
 	"net/http"
 	"time"
@@ -12,12 +13,14 @@ import (
 )
 
 type searchController struct {
-	sr model.SearchRepository
+	sr     model.SearchRepository
+	mlHost string
 }
 
-func NewSearchController(sr model.SearchRepository) *searchController {
+func NewSearchController(sr model.SearchRepository, mlHost string) *searchController {
 	return &searchController{
-		sr: sr,
+		sr:     sr,
+		mlHost: mlHost,
 	}
 }
 
@@ -52,7 +55,7 @@ func (sc *searchController) CreateSearchRecord(c *gin.Context) {
 		return
 	}
 
-	response, err := http.Post("http://localhost:8000/service", "application/json", bytes.NewReader(encoded))
+	response, err := http.Post(fmt.Sprintf("http://%s:8000/service", sc.mlHost), "application/json", bytes.NewReader(encoded))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return

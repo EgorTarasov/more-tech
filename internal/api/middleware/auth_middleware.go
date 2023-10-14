@@ -5,16 +5,10 @@ import (
 	"github.com/google/uuid"
 )
 
-func AuthMiddleware(dockerMode bool) gin.HandlerFunc {
+func AuthMiddleware(domain string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		_, err := c.Cookie("session")
 		if err != nil {
-			var domain string
-			if dockerMode {
-				domain = "larek.itatmisis.ru:9999"
-			} else {
-				domain = "localhost"
-			}
 			c.SetCookie("session", uuid.New().String(), 60*60*24*400, "/", domain, false, true)
 		}
 

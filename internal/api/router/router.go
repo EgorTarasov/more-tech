@@ -32,12 +32,21 @@ func (r *router) Run(serverPort string) error {
 }
 
 func (r *router) setup() {
+	var domain, mlHost string
+	if config.Cfg.DockerMode {
+		domain = "larek.itatmisis.ru:9999"
+		mlHost = "ml"
+	} else {
+		domain = "localhost"
+		mlHost = "localhost"
+	}
+
 	r.engine.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{"*"},
 		AllowHeaders: []string{"*"},
 	}))
-	r.engine.Use(middleware.AuthMiddleware(config.Cfg.DockerMode))
+	r.engine.Use(middleware.AuthMiddleware(domain))
 	r.engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	v1 := r.engine.Group("/v1")
@@ -45,5 +54,5 @@ func (r *router) setup() {
 	r.setupUserRoutes(v1)
 	r.setupDepartmentRoutes(v1)
 	r.setupTicketRoutes(v1)
-	r.setupSearchtRoutes(v1)
+	r.setupSearchtRoutes(v1, mlHost)
 }

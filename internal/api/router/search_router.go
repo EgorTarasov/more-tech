@@ -8,9 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (r *router) setupSearchtRoutes(group *gin.RouterGroup) {
+func (r *router) setupSearchtRoutes(group *gin.RouterGroup, mlHost string) {
 	searchRepo := repository.NewSearchMongoRepository(r.mongoClient.Database(config.Cfg.MongoDb))
-	sc := controller.NewSearchController(searchRepo)
+
+	sc := controller.NewSearchController(searchRepo, mlHost)
 
 	search := group.Group("/search")
 	search.GET("/user", sc.GetSearchRecordsForUser)
