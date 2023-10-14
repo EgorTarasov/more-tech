@@ -40,10 +40,14 @@ func NewDepartmentController(dr model.DepartmentRepository, rr model.RatingRepos
 func (dc *departmentController) GetDepartmentById(c *gin.Context) {
 	// estimating time leaving department
 	id := c.Param("id")
-	userId, err := c.Cookie("session")
+	var userId string
+	var err error
+
+	userId, err = c.Cookie("session")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
-		return
+
+		userId = c.GetString("session")
+
 	}
 
 	hexId, err := primitive.ObjectIDFromHex(id)
@@ -93,12 +97,14 @@ func (dc *departmentController) GetDepartmentById(c *gin.Context) {
 //	@Failure		422				{object}	model.ErrorResponse	"Unprocessable entity"
 //	@Router			/v1/departments [post]
 func (dc *departmentController) GetDepartmentByRange(c *gin.Context) {
-	// userId, err := c.Cookie("session")
-	// if err != nil {
-	// 	c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
-	// 	return
-	// }
-	userId := "1"
+	var userId string
+	var err error
+
+	userId, err = c.Cookie("session")
+	if err != nil {
+		userId = c.GetString("session")
+	}
+
 	departmentData := model.DepartmentRangeRequest{}
 	if err := c.BindJSON(&departmentData); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, model.ErrorResponse{Message: err.Error()})
@@ -176,10 +182,14 @@ func (dc *departmentController) AddDepartmentRating(c *gin.Context) {
 		return
 	}
 
-	userId, err := c.Cookie("session")
+	var userId string
+	var err error
+
+	userId, err = c.Cookie("session")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
-		return
+
+		userId = c.GetString("session")
+
 	}
 	ratingData.UserId = userId
 	logging.Log.Debug(ratingData)
@@ -208,10 +218,14 @@ func (dc *departmentController) AddDepartmentRating(c *gin.Context) {
 func (dc *departmentController) AddDepartmentToFavourites(c *gin.Context) {
 	departmentId := c.Param("id")
 
-	userId, err := c.Cookie("session")
+	var userId string
+	var err error
+
+	userId, err = c.Cookie("session")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
-		return
+
+		userId = c.GetString("session")
+
 	}
 
 	doc, err := dc.fr.FindOne(c.Request.Context(), bson.M{"userId": userId})
@@ -256,13 +270,17 @@ func (dc *departmentController) AddDepartmentToFavourites(c *gin.Context) {
 func (dc *departmentController) DeleteDepartmentFromFavourites(c *gin.Context) {
 	departmentID := c.Param("id")
 
-	userID, err := c.Cookie("session")
+	var userId string
+	var err error
+
+	userId, err = c.Cookie("session")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
-		return
+
+		userId = c.GetString("session")
+
 	}
 
-	filter := bson.M{"userId": userID}
+	filter := bson.M{"userId": userId}
 	update := bson.M{"$pull": bson.M{"departmentIds": departmentID}}
 
 	doc, err := dc.fr.FindOneAndUpdate(c.Request.Context(), filter, update)
@@ -294,13 +312,17 @@ func (dc *departmentController) DeleteDepartmentFromFavourites(c *gin.Context) {
 //	@Failure		422	{object}	model.ErrorResponse
 //	@Router			/v1/departments/favourite [get]
 func (dc *departmentController) GetFavouriteDepartments(c *gin.Context) {
-	userID, err := c.Cookie("session")
+	var userId string
+	var err error
+
+	userId, err = c.Cookie("session")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
-		return
+
+		userId = c.GetString("session")
+
 	}
 
-	doc, err := dc.fr.FindOne(c.Request.Context(), bson.M{"userId": userID})
+	doc, err := dc.fr.FindOne(c.Request.Context(), bson.M{"userId": userId})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return

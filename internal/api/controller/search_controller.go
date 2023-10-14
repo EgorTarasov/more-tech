@@ -44,10 +44,14 @@ func (sc *searchController) CreateSearchRecord(c *gin.Context) {
 		return
 	}
 
-	userId, err := c.Cookie("session")
+	var userId string
+	var err error
+
+	userId, err = c.Cookie("session")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
-		return
+
+		userId = c.GetString("session")
+
 	}
 
 	encoded, err := json.Marshal(searchData)
@@ -118,10 +122,14 @@ func (sc *searchController) GetSearchRecordById(c *gin.Context) {
 //	@Failure		404	{object}	model.ErrorResponse	"Searches not found"
 //	@Router			/v1/search/user [get]
 func (sc *searchController) GetSearchRecordsForUser(c *gin.Context) {
-	userId, err := c.Cookie("session")
+	var userId string
+	var err error
+
+	userId, err = c.Cookie("session")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
-		return
+
+		userId = c.GetString("session")
+
 	}
 
 	searches, err := sc.sr.FindMany(c.Request.Context(), bson.M{"userId": userId})

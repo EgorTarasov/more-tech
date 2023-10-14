@@ -50,10 +50,13 @@ func (tc *ticketController) CreateTicket(c *gin.Context) {
 		return
 	}
 
-	userId, err := c.Cookie("session")
+	var userId string
+
+	userId, err = c.Cookie("session")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
-		return
+
+		userId = c.GetString("session")
+
 	}
 
 	ticket.UserId = userId
@@ -123,10 +126,14 @@ func (tc *ticketController) GetTicketsForDepartment(c *gin.Context) {
 //	@Failure		404	{object}	string			"Not Found"
 //	@Router			/v1/tickets/user [get]
 func (tc *ticketController) GetTicketsForUser(c *gin.Context) {
-	userId, err := c.Cookie("session")
+	var userId string
+	var err error
+
+	userId, err = c.Cookie("session")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
-		return
+
+		userId = c.GetString("session")
+
 	}
 
 	tickets, err := tc.tr.FindMany(c.Request.Context(), bson.M{"userId": userId})
