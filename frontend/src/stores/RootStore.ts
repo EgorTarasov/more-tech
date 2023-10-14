@@ -189,7 +189,9 @@ export class RootStore {
         }
 
         const details = await DepartmentsApiServiceInstanse.getDepartment(
-            this.selectedDepartment?._id ?? ''
+            this.selectedDepartment?._id ?? '',
+            this.start[1],
+            this.start[0]
         );
 
         runInAction(() => {

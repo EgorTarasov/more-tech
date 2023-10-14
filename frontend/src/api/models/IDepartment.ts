@@ -56,7 +56,7 @@ export interface IDepartmentDetails {
 
 export interface IWorkload {
     day: string;
-    loadhours: Iloadhours[];
+    loadHours: Iloadhours[];
 }
 
 export interface ISearchResponse {

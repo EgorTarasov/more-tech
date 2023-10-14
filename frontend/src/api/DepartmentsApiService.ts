@@ -13,8 +13,17 @@ export class DepartmentsApiService {
         return response.data;
     }
 
-    public async getDepartment(id: string): Promise<IDepartmentDetails> {
-        const response = await axios.get<IDepartmentDetails>(`${API_URL}/v1/departments/${id}`);
+    public async getDepartment(
+        id: string,
+        startLatitude: number,
+        startLongitude: number
+    ): Promise<IDepartmentDetails> {
+        const response = await axios.get<IDepartmentDetails>(`${API_URL}/v1/departments/${id}`, {
+            params: {
+                startLatitude,
+                startLongitude,
+            },
+        });
 
         return response.data;
     }
