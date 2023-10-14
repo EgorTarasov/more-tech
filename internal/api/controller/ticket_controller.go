@@ -29,13 +29,13 @@ func NewTicketController(tr model.TicketRepository, dr model.DepartmentRepositor
 //	@Tags			tickets
 //	@Accept			json
 //	@Produce		json
-//	@Param			ticket	body		model.Ticket		true	"Ticket"
-//	@Success		201		{object}	string				"Ticket id"
-//	@Failure		400		{object}	model.ErrorResponse	"Bad Request"
-//	@Failure		422		{object}	model.ErrorResponse	"Unprocessable Entity"
+//	@Param			ticket	body		model.TicketCreateRequest	true	"Ticket"
+//	@Success		201		{object}	string						"Ticket id"
+//	@Failure		400		{object}	model.ErrorResponse			"Bad Request"
+//	@Failure		422		{object}	model.ErrorResponse			"Unprocessable Entity"
 //	@Router			/v1/tickets [post]
 func (tc *ticketController) CreateTicket(c *gin.Context) {
-	ticket := model.Ticket{}
+	ticket := model.TicketCreateRequest{}
 	if err := c.BindJSON(&ticket); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, model.ErrorResponse{Message: err.Error()})
 		return
@@ -68,9 +68,9 @@ func (tc *ticketController) CreateTicket(c *gin.Context) {
 //	@Tags			tickets
 //	@Accept			json
 //	@Produce		json
-//	@Param			ticketId	path		string			true	"Ticket id"
-//	@Success		200			{object}	model.Ticket	"Ticket"
-//	@Failure		404			{object}	string			"Not Found"
+//	@Param			ticketId	path		string					true	"Ticket id"
+//	@Success		200			{object}	model.TicketResponse	"Ticket"
+//	@Failure		404			{object}	string					"Not Found"
 //	@Router			/v1/tickets/{ticketId} [get]
 func (tc *ticketController) GetTicketById(c *gin.Context) {
 	ticketId := c.Param("ticketId")
@@ -91,9 +91,9 @@ func (tc *ticketController) GetTicketById(c *gin.Context) {
 //	@Tags			tickets
 //	@Accept			json
 //	@Produce		json
-//	@Param			departmentId	path		string			true	"Department id"
-//	@Success		200				{array}		model.Ticket	"Tickets"
-//	@Failure		404				{object}	string			"Not Found"
+//	@Param			departmentId	path		string					true	"Department id"
+//	@Success		200				{array}		model.TicketResponse	"Tickets"
+//	@Failure		404				{object}	string					"Not Found"
 //	@Router			/v1/tickets/department/{departmentId} [get]
 func (tc *ticketController) GetTicketsForDepartment(c *gin.Context) {
 	departmentId := c.Param("departmentId")
@@ -114,9 +114,9 @@ func (tc *ticketController) GetTicketsForDepartment(c *gin.Context) {
 //	@Tags			tickets
 //	@Accept			json
 //	@Produce		json
-//	@Param			userId	path		string			true	"User id"
-//	@Success		200		{array}		model.Ticket	"Tickets"
-//	@Failure		404		{object}	string			"Not Found"
+//	@Param			userId	path		string					true	"User id"
+//	@Success		200		{array}		model.TicketResponse	"Tickets"
+//	@Failure		404		{object}	string					"Not Found"
 //	@Router			/v1/tickets/user/{userId} [get]
 func (tc *ticketController) GetTicketsForUser(c *gin.Context) {
 	userId := c.Param("userId")

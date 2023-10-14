@@ -22,18 +22,18 @@ func NewTicketMongoRepository(mongoDb *mongo.Database) model.TicketRepository {
 	}
 }
 
-func (tr *ticketMongoRepository) InsertOne(c context.Context, ticketData model.Ticket) (string, error) {
+func (tr *ticketMongoRepository) InsertOne(c context.Context, ticketData model.TicketCreateRequest) (string, error) {
 	res, err := tr.db.Collection(tr.collection).InsertOne(c, ticketData)
 	return res.InsertedID.(primitive.ObjectID).Hex(), err
 }
 
-func (tr *ticketMongoRepository) FindOne(c context.Context, ticketId string) (*model.Ticket, error) {
+func (tr *ticketMongoRepository) FindOne(c context.Context, ticketId string) (*model.TicketResponse, error) {
 	hex_id, err := primitive.ObjectIDFromHex(ticketId)
 	if err != nil {
 		return nil, err
 	}
 
-	ticket := model.Ticket{}
+	ticket := model.TicketResponse{}
 
 	err = tr.db.Collection(tr.collection).FindOne(c, bson.M{"_id": hex_id}).Decode(&ticket)
 	if err != nil {
@@ -43,8 +43,8 @@ func (tr *ticketMongoRepository) FindOne(c context.Context, ticketId string) (*m
 	return &ticket, nil
 }
 
-func (tr *ticketMongoRepository) FindMany(c context.Context, filter bson.M) ([]model.Ticket, error) {
-	var tickets []model.Ticket
+func (tr *ticketMongoRepository) FindMany(c context.Context, filter bson.M) ([]model.TicketResponse, error) {
+	var tickets []model.TicketResponse
 
 	cursor, err := tr.db.Collection(tr.collection).Find(c, filter)
 	if err != nil {
@@ -71,6 +71,10 @@ func (tr *ticketMongoRepository) DeleteOne(c context.Context, ticketId string) e
 		return err
 	}
 
-	_, err = tr.db.Collection(tr.collection).DeleteOne(c, bson.M{"_id": hex_id})
+	res, err := tr.db.Collection(tr.collection).DeleteOne(c, bson.M{"_id": hex_id})
+	if res.DeletedCount == 0 {
+		return mongo.ErrNoDocuments
+	}
+
 	return err
 }

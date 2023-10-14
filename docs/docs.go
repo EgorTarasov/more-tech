@@ -168,7 +168,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Ticket"
+                            "$ref": "#/definitions/model.TicketCreateRequest"
                         }
                     }
                 ],
@@ -222,7 +222,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Ticket"
+                                "$ref": "#/definitions/model.TicketResponse"
                             }
                         }
                     },
@@ -263,7 +263,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Ticket"
+                                "$ref": "#/definitions/model.TicketResponse"
                             }
                         }
                     },
@@ -302,7 +302,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Ticket",
                         "schema": {
-                            "$ref": "#/definitions/model.Ticket"
+                            "$ref": "#/definitions/model.TicketResponse"
                         }
                     },
                     "404": {
@@ -523,7 +523,24 @@ const docTemplate = `{
                 }
             }
         },
-        "model.Ticket": {
+        "model.TicketCreateRequest": {
+            "type": "object",
+            "properties": {
+                "departmentId": {
+                    "type": "string",
+                    "example": "5f9e3b4e1d9eaf1f3125fc3f"
+                },
+                "timeSlot": {
+                    "type": "string",
+                    "example": "2020-11-02T10:00:00.000Z"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "5f9e3b4e1d9eaf1f3125fc3f"
+                }
+            }
+        },
+        "model.TicketResponse": {
             "type": "object",
             "properties": {
                 "_id": {
