@@ -222,7 +222,6 @@ definitions:
           $ref: '#/definitions/model.HourWorkload'
         type: array
     type: object
-host: localhost:9999
 info:
   contact: {}
   description: More Tech API server

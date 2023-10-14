@@ -6,7 +6,6 @@
         "contact": {},
         "version": "0.0.1"
     },
-    "host": "localhost:9999",
     "paths": {
         "/v1/department/range": {
             "post": {

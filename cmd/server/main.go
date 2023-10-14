@@ -12,7 +12,6 @@ import (
 
 //	@title			More Tech API
 //	@description	More Tech API server
-//	@host			localhost:9999
 //	@version		0.0.1
 func main() {
 	if err := config.NewConfig(); err != nil {
