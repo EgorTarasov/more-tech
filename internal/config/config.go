@@ -15,6 +15,7 @@ type Config struct {
 	ServerPort                    string
 	SecretKey                     string
 	DepartmentCapacityPerTimeSlot int64
+	DockerMode                    bool
 }
 
 var Cfg *Config
@@ -36,8 +37,10 @@ func NewConfig() error {
 
 	dockerMode := os.Getenv("DOCKER_MODE")
 	if dockerMode == "1" {
+		Cfg.DockerMode = true
 		Cfg.MongoHost = "mongo"
 	} else {
+		Cfg.DockerMode = false
 		Cfg.MongoHost = "localhost"
 	}
 	if Cfg.MongoPort == "" {
