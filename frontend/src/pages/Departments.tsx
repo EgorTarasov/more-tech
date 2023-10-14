@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { useStores } from '../hooks/useStores';
 import { observer } from 'mobx-react-lite';
 import OfficeMarker from '../components/OfficeMarker';
+import Search from '../components/Search';
+import Dock from '../components/Dock';
 
 const Departments = observer(() => {
     const [YMaps, setYMaps] = useState(<div />);
@@ -76,9 +78,15 @@ const Departments = observer(() => {
                 setYMaps(<div />);
             }
         })();
-    }, []);
+    }, [rootStore.mapLocation, rootStore.departments]);
 
-    return <div style={{ width: '100%', height: '100vh' }}>{YMaps}</div>;
+    return (
+        <>
+            <Search />
+            <div style={{ width: '100%', height: '100vh' }}>{YMaps}</div>
+            <Dock />
+        </>
+    );
 });
 
 export default Departments;

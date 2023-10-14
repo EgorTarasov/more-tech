@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@admiral-ds/react-ui": "^7.0.0",
+    "@ant-design/icons": "^5.2.6",
     "@pbe/react-yandex-maps": "^1.2.5",
     "@yandex/ymaps3-types": "^0.0.17",
     "antd": "^5.10.0",
+    "antd-mobile": "^5.32.4",
     "axios": "^1.5.1",
     "mobx": "^6.10.2",
     "mobx-react-lite": "^4.0.5",

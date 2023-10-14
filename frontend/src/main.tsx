@@ -5,6 +5,8 @@ import { router } from './router';
 
 import './index.scss';
 import { ConfigProvider } from 'antd';
+import { ThemeProvider } from 'styled-components';
+import { DropdownProvider, FontsVTBGroup, LIGHT_THEME } from '@admiral-ds/react-ui';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
@@ -13,7 +15,12 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                 token: {},
             }}
         >
-            <RouterProvider router={router} />
+            <ThemeProvider theme={LIGHT_THEME}>
+                <DropdownProvider>
+                    <FontsVTBGroup />
+                    <RouterProvider router={router} />
+                </DropdownProvider>
+            </ThemeProvider>
         </ConfigProvider>
     </React.StrictMode>
 );

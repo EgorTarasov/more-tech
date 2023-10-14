@@ -5,6 +5,7 @@ import { IMapLocation } from '../models';
 
 export class RootStore {
     departments: IDepartment[] = [];
+    selectedDepartment: IDepartment | null = null;
     mapLocation: IMapLocation = {
         center: [37.617698, 55.755864],
         zoom: 11,
@@ -14,12 +15,19 @@ export class RootStore {
         makeAutoObservable(this, {
             departments: observable,
             mapLocation: observable,
+            selectedDepartment: observable,
         });
     }
 
     setDepartments(departments: IDepartment[]) {
         runInAction(() => {
             this.departments = departments;
+        });
+    }
+
+    setSelectedDepartment(department: IDepartment | null) {
+        runInAction(() => {
+            this.selectedDepartment = department;
         });
     }
 
@@ -32,7 +40,7 @@ export class RootStore {
     async fetchDepartments() {
         const departments = await DepartmentsApiServiceInstanse.getDepartments();
 
-        this.setDepartments(departments);
+        this.setDepartments(departments.sort((a, b) => a.distance - b.distance));
 
         return departments;
     }

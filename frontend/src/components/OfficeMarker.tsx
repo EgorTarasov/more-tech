@@ -1,5 +1,5 @@
 import { IDepartment } from '../api/models';
-import vtb from '../assets/vtb.png';
+import bear from '../assets/react.svg';
 
 type Props = {
     department: IDepartment;
@@ -8,7 +8,7 @@ type Props = {
 const OfficeMarker = ({ department }: Props) => {
     return (
         <div className='office-marker'>
-            <img src={vtb} alt={department.shortName} />
+            <img src={bear} alt={department.shortName} />
         </div>
     );
 };
