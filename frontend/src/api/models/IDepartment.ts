@@ -58,3 +58,23 @@ export interface IWorkload {
     day: string;
     loadhours: Iloadhours[];
 }
+
+export interface ISearchResponse {
+    _id: string;
+    text: string;
+    userId: string;
+    coordinates: ICoordinates;
+    createdAt: string;
+    special: ISpecialBool;
+    atm: boolean;
+    online: boolean;
+}
+
+export interface ISpecialBool {
+    vipZone: boolean;
+    vipOffice: boolean;
+    ramp: boolean;
+    person: boolean;
+    juridical: boolean;
+    Prime: boolean;
+}

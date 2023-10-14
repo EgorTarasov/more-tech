@@ -198,4 +198,27 @@ export class RootStore {
 
         return details;
     }
+
+    async searchML(text: string) {
+        const {
+            special: { Prime, juridical, person, ramp, vipOffice, vipZone },
+        } = await CommonApiServiceInstanse.search(text, this.start[1], this.start[0]);
+
+        runInAction(() => {
+            this.filters = {
+                special: {
+                    vipZone,
+                    vipOffice,
+                    ramp,
+                    person,
+                    juridical,
+                    Prime,
+                },
+                raitingMoreThan4: null,
+                raitingMoreThan45: null,
+            };
+        });
+
+        return;
+    }
 }

@@ -101,12 +101,18 @@ const FiltersDock = observer(() => {
     ];
 
     useEffect(() => {
+        setFilters(rootStore.filters);
+    }, [rootStore.filters]);
+
+    useEffect(() => {
         if (rootStore.openFilterTrigger !== null) {
             ref.current?.setHeight(window.innerHeight - 20);
         }
     }, [rootStore.openFilterTrigger]);
 
-    const onSearch: SearchProps['onSearch'] = (value: string) => console.log(value);
+    const onSearch: SearchProps['onSearch'] = (value: string) => {
+        rootStore.searchML(value);
+    };
 
     const suffix = (
         <AudioOutlined
