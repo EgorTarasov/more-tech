@@ -6,16 +6,19 @@ import { useStores } from '../hooks/useStores';
 import { LeftOutlined } from '@ant-design/icons';
 import { Button as AdmiralButton } from '@admiral-ds/react-ui';
 import { useEffect } from 'react';
+import { observer } from 'mobx-react-lite';
+import AppointmentDock from './AppointmentDock';
 
 type Props = {
     department: IDepartment;
 };
 
-const DepartmentDetails = ({ department }: Props) => {
+const DepartmentDetails = observer(({ department }: Props) => {
     const { rootStore } = useStores();
 
     useEffect(() => {
         rootStore.fetchRoute();
+        rootStore.fetchDepartmentDetails();
     }, [rootStore, rootStore.selectedDepartment]);
 
     return (
@@ -247,7 +250,13 @@ const DepartmentDetails = ({ department }: Props) => {
 
             <div className='department__details__actions'>
                 <Col>
-                    <AdmiralButton>Записаться в отделение</AdmiralButton>
+                    <AdmiralButton
+                        onClick={() => {
+                            rootStore.triggerAppointment();
+                        }}
+                    >
+                        Записаться в отделение
+                    </AdmiralButton>
                     <a
                         href={`https://yandex.ru/maps/?ll=${rootStore.start[0]}%2C${rootStore.start[1]}&mode=routes&rtext=${rootStore.start[1]}%2C${rootStore.start[0]}~${rootStore.selectedDepartment?.location.coordinates.latitude}%2C${rootStore.selectedDepartment?.location.coordinates.longitude}&rtt=mt&ruri=~&z=14`}
                         target='_blank'
@@ -259,8 +268,10 @@ const DepartmentDetails = ({ department }: Props) => {
                     </a>
                 </Col>
             </div>
+
+            <AppointmentDock />
         </>
     );
-};
+});
 
 export default DepartmentDetails;

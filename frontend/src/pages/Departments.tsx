@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite';
 import OfficeMarker from '../components/OfficeMarker';
 import Search from '../components/Search';
 import Dock from '../components/Dock';
+import FiltersDock from '../components/FiltersDock';
 
 const Departments = observer(() => {
     const [YMaps, setYMaps] = useState(<div />);
@@ -12,7 +13,11 @@ const Departments = observer(() => {
     const { rootStore } = useStores();
 
     useEffect(() => {
-        rootStore.fetchDepartments();
+        async function fetchDepartments() {
+            await rootStore.fetchUser();
+            await rootStore.fetchDepartments();
+        }
+        fetchDepartments();
     }, [rootStore]);
 
     useEffect(() => {
@@ -57,9 +62,7 @@ const Departments = observer(() => {
                         <YMapControls position='left'>
                             <YMapGeolocationControl />
                         </YMapControls>
-                        {rootStore.departments.map((department) => {
-                            console.log(department.location);
-
+                        {rootStore.filteredDepartments.map((department) => {
                             return (
                                 <YMapMarker
                                     key={department._id}
@@ -83,13 +86,19 @@ const Departments = observer(() => {
                 setYMaps(<div />);
             }
         })();
-    }, [rootStore.mapLocation, rootStore.departments, rootStore.polylyne]);
+    }, [
+        rootStore.mapLocation,
+        rootStore.departments,
+        rootStore.polylyne,
+        rootStore.filteredDepartments,
+    ]);
 
     return (
         <>
             <Search />
             <div style={{ width: '100%', height: '100vh' }}>{YMaps}</div>
             <Dock />
+            <FiltersDock />
         </>
     );
 });

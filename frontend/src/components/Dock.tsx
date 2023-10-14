@@ -16,7 +16,7 @@ const Dock = observer(() => {
                     {rootStore.selectedDepartment ? (
                         <DepartmentDetails department={rootStore.selectedDepartment} />
                     ) : (
-                        rootStore.departments.map((department, index) => (
+                        rootStore.filteredDepartments.map((department, index) => (
                             <List.Item key={index}>
                                 <DepartmentGeneral department={department} />
                             </List.Item>

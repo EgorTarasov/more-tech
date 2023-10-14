@@ -33,7 +33,7 @@ const DepartmentGeneral = ({ department }: Props) => {
             <Row wrap={false} justify={'space-between'}>
                 <Col span={18}>
                     <div className='department-general__address department-general__item'>
-                        {department.schedulefl}
+                        {department.address}
                     </div>
                 </Col>
 
@@ -46,7 +46,7 @@ const DepartmentGeneral = ({ department }: Props) => {
 
             <Row justify={'space-between'} align={'middle'} style={{ marginTop: 7 }}>
                 <Col>
-                    <Rate allowHalf defaultValue={2.5} />
+                    <Rate allowHalf defaultValue={4.5} />
                 </Col>
 
                 <Col>

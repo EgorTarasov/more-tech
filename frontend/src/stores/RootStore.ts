@@ -1,14 +1,18 @@
 import { makeAutoObservable, observable, runInAction } from 'mobx';
-import { IDepartment } from '../api/models';
+import { IDepartment, IDepartmentDetails } from '../api/models';
 import { DepartmentsApiServiceInstanse } from '../api/DepartmentsApiService';
 import { ILineString, IMapLocation } from '../models';
 import { OpenMapsAipServiceInstanse } from '../api/OpenMapsApiService';
 import { mapCoordsToString } from '../utils/mapCoordsToString';
 import { mapRouteToCoords } from '../utils/mapRouteToCoords';
+import { IFilter } from '../models/Filters';
+import { CommonApiServiceInstanse } from '../api/CommonApiService';
 
 export class RootStore {
     departments: IDepartment[] = [];
+    filteredDepartments: IDepartment[] = [];
     selectedDepartment: IDepartment | null = null;
+    selectedDepartmentDetails: IDepartmentDetails | null = null;
     mapLocation: IMapLocation = {
         center: [37.617698, 55.755864],
         zoom: 11,
@@ -22,20 +26,39 @@ export class RootStore {
         style: { stroke: [{ color: '#092896', width: 4 }] },
     };
     start: [number, number] = [37.617698, 55.755864];
+    openFilterTrigger: boolean | null = null;
+    openAppointmentTrigger: boolean | null = null;
+    filters: IFilter = {
+        special: {
+            vipZone: null,
+            vipOffice: null,
+            ramp: null,
+            person: null,
+            juridical: null,
+            Prime: null,
+        },
+        raitingMoreThan4: null,
+        raitingMoreThan45: null,
+    };
 
     constructor() {
         makeAutoObservable(this, {
             departments: observable,
+            filteredDepartments: observable,
             mapLocation: observable,
             selectedDepartment: observable,
             polylyne: observable,
             start: observable,
+            openFilterTrigger: observable,
+            openAppointmentTrigger: observable,
+            filters: observable,
         });
     }
 
     setDepartments(departments: IDepartment[]) {
         runInAction(() => {
             this.departments = departments;
+            this.filteredDepartments = departments;
         });
     }
 
@@ -54,6 +77,62 @@ export class RootStore {
     setPolylyne(polylyne: ILineString | null) {
         runInAction(() => {
             this.polylyne = polylyne;
+        });
+    }
+
+    setFilters(filters: IFilter) {
+        runInAction(() => {
+            this.filteredDepartments = this.departments.filter((department) => {
+                if (filters.raitingMoreThan4 && department.rating < 4) {
+                    return false;
+                }
+
+                if (filters.raitingMoreThan45 && department.rating < 4.5) {
+                    return false;
+                }
+
+                if (filters.special.vipZone && department.special.vipZone === 0) {
+                    return false;
+                }
+
+                if (filters.special.vipOffice && department.special.vipOffice === 0) {
+                    return false;
+                }
+
+                if (filters.special.ramp && department.special.ramp === 0) {
+                    return false;
+                }
+
+                if (filters.special.person && department.special.person === 0) {
+                    return false;
+                }
+
+                if (filters.special.juridical && department.special.juridical === 0) {
+                    return false;
+                }
+
+                if (filters.special.Prime && department.special.Prime === 0) {
+                    return false;
+                }
+
+                return true;
+            });
+        });
+
+        runInAction(() => {
+            this.filters = filters;
+        });
+    }
+
+    triggerFilter() {
+        runInAction(() => {
+            this.openFilterTrigger = !this.openFilterTrigger;
+        });
+    }
+
+    triggerAppointment() {
+        runInAction(() => {
+            this.openAppointmentTrigger = !this.openAppointmentTrigger;
         });
     }
 
@@ -96,5 +175,27 @@ export class RootStore {
         });
 
         return route;
+    }
+
+    async fetchUser() {
+        const user = await CommonApiServiceInstanse.getUser();
+
+        return user;
+    }
+
+    async fetchDepartmentDetails() {
+        if (this.selectedDepartment === null) {
+            return;
+        }
+
+        const details = await DepartmentsApiServiceInstanse.getDepartment(
+            this.selectedDepartment?._id ?? ''
+        );
+
+        runInAction(() => {
+            this.selectedDepartmentDetails = details;
+        });
+
+        return details;
     }
 }

@@ -29,12 +29,11 @@ body {
     box-sizing: border-box;
     width: calc(100% - 40px);
     height: 50px;
-    background-color: #fff;
     border-radius: 5px;
     display: flex;
     align-items: center;
     padding: 0 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    // box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 
     input {
         width: 100%;
@@ -47,6 +46,32 @@ body {
 
 .dock {
     z-index: 99999;
+}
+
+.filters-dock {
+    z-index: 999999;
+    .ant-input-affix-wrapper {
+        background: #f3f7fa !important;
+        border: none;
+        padding: 8px;
+    }
+
+    .ant-input {
+        background: #f3f7fa !important;
+        color: #6b7683 !important;
+    }
+
+    &__search {
+        button {
+            background: #f3f7fa !important;
+            color: #6b7683 !important;
+            border: none;
+        }
+    }
+}
+
+.appointment-dock {
+    z-index: 999999;
 }
 
 .base-text {
@@ -111,6 +136,43 @@ body {
                 border-radius: 8px;
                 margin-top: 5px;
             }
+        }
+    }
+}
+
+.ant-segmented-item.ant-segmented-item-selected {
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    .ant-segmented-item-label {
+        border: 1px solid #0062ff;
+        border-radius: 5px;
+        color: #0062ff;
+    }
+}
+
+.ant-segmented-thumb-motion-appear {
+    border: 1px solid #0062ff;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.filters {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    &__button {
+        color: #6b7683 !important;
+        border: 1px solid #6b7683 !important;
+        border-radius: 30px !important;
+        background: #fff !important;
+        transition: all 0.3s ease !important;
+
+        &_active {
+            color: #fff !important;
+            border: 1px solid #0062ff !important;
+            background: #0062ff !important;
         }
     }
 }

@@ -13,6 +13,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <ConfigProvider
             theme={{
                 token: {},
+                components: {
+                    Segmented: {
+                        itemSelectedColor: '#092896',
+                    },
+                },
             }}
         >
             <ThemeProvider theme={LIGHT_THEME}>
