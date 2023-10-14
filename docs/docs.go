@@ -255,6 +255,20 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start latitude",
+                        "name": "startLatitude",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start longitude",
+                        "name": "startLongitude",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -618,6 +632,12 @@ const docTemplate = `{
                 },
                 "coordinates": {
                     "$ref": "#/definitions/model.Coordinates"
+                },
+                "estimatedTimeCar": {
+                    "type": "number"
+                },
+                "estimatedTimeWalk": {
+                    "type": "number"
                 },
                 "favourite": {
                     "type": "boolean",

@@ -4,7 +4,9 @@ import (
 	"errors"
 	"more-tech/internal/logging"
 	"more-tech/internal/model"
+	"more-tech/internal/service"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,16 +15,18 @@ import (
 )
 
 type departmentController struct {
-	dr model.DepartmentRepository
-	rr model.RatingRepository
-	fr model.FavouriteRepository
+	dr        model.DepartmentRepository
+	rr        model.RatingRepository
+	fr        model.FavouriteRepository
+	routeHost string
 }
 
-func NewDepartmentController(dr model.DepartmentRepository, rr model.RatingRepository, fr model.FavouriteRepository) departmentController {
+func NewDepartmentController(dr model.DepartmentRepository, rr model.RatingRepository, fr model.FavouriteRepository, routeHost string) departmentController {
 	return departmentController{
-		dr: dr,
-		rr: rr,
-		fr: fr,
+		dr:        dr,
+		rr:        rr,
+		fr:        fr,
+		routeHost: routeHost,
 	}
 }
 
@@ -33,21 +37,20 @@ func NewDepartmentController(dr model.DepartmentRepository, rr model.RatingRepos
 //	@Tags			department
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		string	true	"Department ID"
-//	@Success		200	{object}	model.Department
-//	@Failure		404	{object}	model.ErrorResponse	"Department not found"
+//	@Param			id				path		string	true	"Department ID"
+//	@Param			startLatitude	query		string	true	"Start latitude"
+//	@Param			startLongitude	query		string	true	"Start longitude"
+//	@Success		200				{object}	model.Department
+//	@Failure		404				{object}	model.ErrorResponse	"Department not found"
 //	@Router			/v1/departments/{id} [get]
 func (dc *departmentController) GetDepartmentById(c *gin.Context) {
-	// estimating time leaving department
 	id := c.Param("id")
 	var userId string
 	var err error
 
 	userId, err = c.Cookie("session")
 	if err != nil {
-
 		userId = c.GetString("session")
-
 	}
 
 	hexId, err := primitive.ObjectIDFromHex(id)
@@ -64,6 +67,16 @@ func (dc *departmentController) GetDepartmentById(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
+
+	startLongitude, _ := strconv.ParseFloat(c.Query("startLongitude"), 64)
+	startLatitude, _ := strconv.ParseFloat(c.Query("startLatitude"), 64)
+	timeCar, timeWalk, err := service.GetEstimatedTime(startLongitude, startLatitude, department.Coordinates.Longitude, department.Coordinates.Latitude, dc.routeHost)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
+		return
+	}
+	department.EstimatedTimeCar = timeCar
+	department.EstimatedTimeWalk = timeWalk
 
 	favourite, err := dc.fr.FindOne(c.Request.Context(), bson.M{"userId": userId})
 	if errors.Is(err, mongo.ErrNoDocuments) {

@@ -8,19 +8,21 @@ import (
 
 // Есть еще записи на время, предполагается, что не может быть больше 4 записей на один час (в качестве прототипа)
 type Department struct {
-	MongoId      string      `json:"_id,omitempty" bson:"_id,omitempty" example:"65298f171d9eaf1f3125fc41"`
-	ID           int         `json:"id" example:"29000262"`
-	BiskvitID    string      `json:"Biskvit_id" example:"5010"`
-	ShortName    string      `json:"shortName" example:"ДО «ЦИК «Химки-Правобережный» Филиала № 7701 Банка ВТБ (ПАО)"`
-	Address      string      `json:"address" example:"Московская область, г. Химки, ул. Пролетарская, д. 8, стр. 1"`
-	City         string      `json:"city" example:"Химки"`
-	ScheduleFl   string      `json:"scheduleFl" example:"пн-пт: 10:00-20:00 сб: 10:00-17:00 вс: выходной"`
-	ScheduleJurL string      `json:"scheduleJurL" example:"пн-чт: 10:00-19:00 пт: 10:00-18:00 сб, вс: выходной"`
-	Special      Special     `json:"special"`
-	Coordinates  Coordinates `json:"coordinates"`
-	Location     Location    `json:"location"`
-	Workload     []Workload  `json:"workload"` // историческое
-	Favourite    bool        `json:"favourite" example:"true" default:"false"`
+	MongoId           string      `json:"_id,omitempty" bson:"_id,omitempty" example:"65298f171d9eaf1f3125fc41"`
+	ID                int         `json:"id" example:"29000262"`
+	BiskvitID         string      `json:"Biskvit_id" example:"5010"`
+	ShortName         string      `json:"shortName" example:"ДО «ЦИК «Химки-Правобережный» Филиала № 7701 Банка ВТБ (ПАО)"`
+	Address           string      `json:"address" example:"Московская область, г. Химки, ул. Пролетарская, д. 8, стр. 1"`
+	City              string      `json:"city" example:"Химки"`
+	ScheduleFl        string      `json:"scheduleFl" example:"пн-пт: 10:00-20:00 сб: 10:00-17:00 вс: выходной"`
+	ScheduleJurL      string      `json:"scheduleJurL" example:"пн-чт: 10:00-19:00 пт: 10:00-18:00 сб, вс: выходной"`
+	Special           Special     `json:"special"`
+	Coordinates       Coordinates `json:"coordinates"`
+	Location          Location    `json:"location"`
+	Workload          []Workload  `json:"workload"` // историческое
+	Favourite         bool        `json:"favourite" example:"true" default:"false"`
+	EstimatedTimeCar  float64     `json:"estimatedTimeCar"`
+	EstimatedTimeWalk float64     `json:"estimatedTimeWalk"`
 }
 
 type Special struct {

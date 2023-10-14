@@ -24,6 +24,10 @@ definitions:
         type: string
       coordinates:
         $ref: '#/definitions/model.Coordinates'
+      estimatedTimeCar:
+        type: number
+      estimatedTimeWalk:
+        type: number
       favourite:
         default: false
         example: true
@@ -276,6 +280,16 @@ paths:
       - description: Department ID
         in: path
         name: id
+        required: true
+        type: string
+      - description: Start latitude
+        in: query
+        name: startLatitude
+        required: true
+        type: string
+      - description: Start longitude
+        in: query
+        name: startLongitude
         required: true
         type: string
       produces:

@@ -32,13 +32,15 @@ func (r *router) Run(serverPort string) error {
 }
 
 func (r *router) setup() {
-	var domain, mlHost string
+	var domain, mlHost, routeHost string
 	if config.Cfg.DockerMode {
 		domain = "larek.itatmisis.ru:9999"
 		mlHost = "ml"
+		routeHost = "route"
 	} else {
 		domain = "localhost"
 		mlHost = "localhost"
+		routeHost = "larek.itatmisis.ru:10000"
 	}
 
 	r.engine.Use(cors.New(cors.Config{
@@ -53,7 +55,7 @@ func (r *router) setup() {
 	v1 := r.engine.Group("/v1")
 
 	r.setupUserRoutes(v1)
-	r.setupDepartmentRoutes(v1)
+	r.setupDepartmentRoutes(v1, routeHost)
 	r.setupTicketRoutes(v1)
 	r.setupSearchtRoutes(v1, mlHost)
 }

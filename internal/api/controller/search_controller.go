@@ -37,7 +37,6 @@ func NewSearchController(sr model.SearchRepository, mlHost string) *searchContro
 //	@Failure		422		{object}	model.ErrorResponse	"Unprocessable Entity"
 //	@Router			/v1/search [post]
 func (sc *searchController) CreateSearchRecord(c *gin.Context) {
-	// TODO: return SearchRecord
 	searchData := model.SearchCreate{}
 	if err := c.BindJSON(&searchData); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, model.ErrorResponse{Message: err.Error()})
@@ -49,9 +48,7 @@ func (sc *searchController) CreateSearchRecord(c *gin.Context) {
 
 	userId, err = c.Cookie("session")
 	if err != nil {
-
 		userId = c.GetString("session")
-
 	}
 
 	encoded, err := json.Marshal(searchData)
@@ -127,9 +124,7 @@ func (sc *searchController) GetSearchRecordsForUser(c *gin.Context) {
 
 	userId, err = c.Cookie("session")
 	if err != nil {
-
 		userId = c.GetString("session")
-
 	}
 
 	searches, err := sc.sr.FindMany(c.Request.Context(), bson.M{"userId": userId})

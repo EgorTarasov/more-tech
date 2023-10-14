@@ -54,9 +54,7 @@ func (tc *ticketController) CreateTicket(c *gin.Context) {
 
 	userId, err = c.Cookie("session")
 	if err != nil {
-
 		userId = c.GetString("session")
-
 	}
 
 	ticket.UserId = userId
@@ -131,9 +129,7 @@ func (tc *ticketController) GetTicketsForUser(c *gin.Context) {
 
 	userId, err = c.Cookie("session")
 	if err != nil {
-
 		userId = c.GetString("session")
-
 	}
 
 	tickets, err := tc.tr.FindMany(c.Request.Context(), bson.M{"userId": userId})
