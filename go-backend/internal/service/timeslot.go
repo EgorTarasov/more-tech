@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"more-tech/internal/model"
 	"strconv"
 	"strings"
@@ -25,7 +24,8 @@ func GetClosestTimeSlot(travelTime float64, workload []model.Workload, customTim
 	if customTimeSlot == "" {
 		for idx, timeSlot := range workload[weekday].LoadHours {
 			splitted := strings.Split(timeSlot.Hour, "-")
-			if strings.Split(splitted[0], ":")[0] == fmt.Sprintf("%d", 12) { // arrivalTime.Hour()
+			hour, _ := strconv.Atoi(strings.Split(splitted[0], ":")[0])
+			if hour == 12 { // arrivalTime.Hour()
 				minutes, _ := strconv.Atoi(strings.Split(splitted[0], ":")[1])
 				if minutes > 0 { // arrivalTime.Minute()
 					return workload[weekday].LoadHours[idx-1].Hour
@@ -37,7 +37,8 @@ func GetClosestTimeSlot(travelTime float64, workload []model.Workload, customTim
 		return "no timeslot found"
 	} else {
 		splitted := strings.Split(customTimeSlot, "-")
-		if strings.Split(splitted[0], ":")[0] == fmt.Sprintf("%d", 12) { // arrivalTime.Hour()
+		hour, _ := strconv.Atoi(strings.Split(splitted[0], ":")[0])
+		if hour >= 12 { // arrivalTime.Hour()
 			minutes, _ := strconv.Atoi(strings.Split(splitted[0], ":")[1])
 			if minutes > 0 { // arrivalTime.Minute()
 				return "no timeslot found"
