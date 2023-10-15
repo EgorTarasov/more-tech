@@ -7,6 +7,7 @@ import { mapCoordsToString } from '../utils/mapCoordsToString';
 import { mapRouteToCoords } from '../utils/mapRouteToCoords';
 import { IFilter } from '../models/Filters';
 import { CommonApiServiceInstanse } from '../api/CommonApiService';
+import { AppointmentApiServiceInstanse } from '../api/AppointmentApiService';
 
 export class RootStore {
     departments: IDepartment[] = [];
@@ -237,5 +238,20 @@ export class RootStore {
         });
 
         return;
+    }
+
+    async createAppointment(timeSlot: string) {
+        if (this.selectedDepartment === null) {
+            return;
+        }
+
+        const appointment = await AppointmentApiServiceInstanse.createAppointment(
+            this.selectedDepartment._id,
+            timeSlot,
+            this.start[1],
+            this.start[0]
+        );
+
+        return appointment;
     }
 }

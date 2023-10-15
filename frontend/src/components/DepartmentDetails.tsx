@@ -1,13 +1,12 @@
 import { Accordion, AccordionItem } from '@admiral-ds/react-ui';
 import { IDepartment } from '../api/models';
 import DepartmentGeneral from './DepartmentGeneral';
-import { Button, Col, Row, Typography } from 'antd';
+import { Button, Col, Row, Typography, message } from 'antd';
 import { useStores } from '../hooks/useStores';
 import { LeftOutlined } from '@ant-design/icons';
 import { Button as AdmiralButton } from '@admiral-ds/react-ui';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import AppointmentDock from './AppointmentDock';
 import WorkLoad from './WorkLoad';
 
 type Props = {
@@ -16,6 +15,10 @@ type Props = {
 
 const DepartmentDetails = observer(({ department }: Props) => {
     const { rootStore } = useStores();
+    const [selectedTimeIndex, setSelectedTimeIndex] = useState<number>(0);
+    const [selectedTime, setSelectedTime] = useState<string>('10:00-11:00');
+    const [messageApi, contextHolder] = message.useMessage();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
         rootStore.fetchRoute();
@@ -24,6 +27,7 @@ const DepartmentDetails = observer(({ department }: Props) => {
 
     return (
         <>
+            {contextHolder}
             <div className='department__details'>
                 <Row>
                     <Button
@@ -395,13 +399,58 @@ const DepartmentDetails = observer(({ department }: Props) => {
                         </Row>
                     </AccordionItem>
                 </Accordion>
+
+                <Row>
+                    <Typography.Title level={5}>Выберите время посещения офиса</Typography.Title>
+                </Row>
+
+                <Row style={{ gap: 10 }}>
+                    {rootStore.selectedDepartmentDetails
+                        ? rootStore.selectedDepartmentDetails.workload[0].loadHours.map(
+                              (hour, index) => (
+                                  <Button
+                                      onClick={() => {
+                                          setSelectedTimeIndex(index);
+                                          setSelectedTime(hour.hour);
+                                      }}
+                                      style={{
+                                          padding: 5,
+                                          color: selectedTimeIndex === index ? '#1E4BD2' : '#333',
+                                          background:
+                                              selectedTimeIndex === index ? '#F3F7FA' : 'none',
+                                          border: '1px solid #6B7683',
+                                      }}
+                                  >
+                                      {hour.hour}
+                                  </Button>
+                              )
+                          )
+                        : null}
+                </Row>
             </div>
 
             <div className='department__details__actions'>
                 <Col>
                     <AdmiralButton
+                        loading={isLoading}
                         onClick={() => {
-                            rootStore.triggerAppointment();
+                            setIsLoading(true);
+
+                            rootStore
+                                .createAppointment(selectedTime)
+                                .then(() => {
+                                    messageApi.success('Вы записаны на ' + selectedTime);
+                                })
+                                .catch((error) => {
+                                    console.log(error);
+
+                                    messageApi.error(
+                                        'Ошибка записи. Попробуйте записаться на другое время'
+                                    );
+                                })
+                                .finally(() => {
+                                    setIsLoading(false);
+                                });
                         }}
                     >
                         Записаться в отделение
@@ -417,8 +466,6 @@ const DepartmentDetails = observer(({ department }: Props) => {
                     </a>
                 </Col>
             </div>
-
-            <AppointmentDock />
         </>
     );
 });

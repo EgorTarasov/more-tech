@@ -109,6 +109,7 @@ const Departments = observer(() => {
         rootStore.departments,
         rootStore.polylyne,
         rootStore.filteredDepartments,
+        rootStore.start
     ]);
 
     return (
