@@ -16,7 +16,7 @@ export class CommonApiService {
                 latitude,
                 longitude,
             },
-            test: true,
+            test: false,
         });
 
         return response.data;
