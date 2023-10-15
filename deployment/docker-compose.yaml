@@ -41,3 +41,13 @@ services:
             dockerfile: ../frontend/Dockerfile
         ports:
             - "3000:3000"
+
+    analytics:
+        build:
+            context: ../python-backend/
+            dockerfile: ../python-backend/Dockerfile
+        restart: always
+        env_file:
+            - .env
+        ports:
+            - "8001:8001"

@@ -7,3 +7,6 @@ passlib
 uvicorn
 jinja2
 bcrypt
+python-jose
+python-multipart
+httpx
