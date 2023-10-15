@@ -1,10 +1,8 @@
-import { FloatingPanel, FloatingPanelRef } from 'antd-mobile';
-
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useStores } from '../hooks/useStores';
 import { observer } from 'mobx-react-lite';
 
-import { Col, Input, Row, Segmented, Typography } from 'antd';
+import { Card, Col, Input, Row, Segmented, Typography } from 'antd';
 import { SearchProps } from 'antd/es/input';
 import { AudioOutlined } from '@ant-design/icons';
 import { Button } from '@admiral-ds/react-ui';
@@ -14,11 +12,8 @@ import { SegmentedValue } from 'antd/es/segmented';
 
 const { Search } = Input;
 
-const anchors = [0, window.innerHeight - 20];
-
-const FiltersDock = observer(() => {
+const FiltersDockDescktop = observer(() => {
     const { rootStore } = useStores();
-    const ref = useRef<FloatingPanelRef>(null);
     const [filters, setFilters] = useState<IFilter>(rootStore.filters);
 
     const officeFilters = [
@@ -105,12 +100,6 @@ const FiltersDock = observer(() => {
         setFilters(rootStore.filters);
     }, [rootStore.filters]);
 
-    useEffect(() => {
-        if (rootStore.openFilterTrigger !== null) {
-            ref.current?.setHeight(window.innerHeight - 20);
-        }
-    }, [rootStore.openFilterTrigger]);
-
     const onSearch: SearchProps['onSearch'] = (value: string) => {
         rootStore.searchML(value);
     };
@@ -125,7 +114,7 @@ const FiltersDock = observer(() => {
     );
 
     return (
-        <FloatingPanel ref={ref} className='filters-dock' anchors={anchors}>
+        <Card className='filters-dock-descktop'>
             <div style={{ padding: '0px 12px' }}>
                 <Row>
                     <Col span={24}>
@@ -147,10 +136,10 @@ const FiltersDock = observer(() => {
 
                 <Row>
                     <Segmented
-                        size='large'
                         onChange={(value: SegmentedValue) => {
                             rootStore.setAtmsShown(value === 'Банкоматы');
                         }}
+                        size='large'
                         options={['Офисы', 'Банкоматы']}
                     />
                 </Row>
@@ -179,20 +168,25 @@ const FiltersDock = observer(() => {
 
             <div className='department__details__actions'>
                 <Col>
-                    <AdmiralButton style={{ opacity: 0 }}>Записаться в отделение</AdmiralButton>
-
                     <AdmiralButton
                         onClick={() => {
                             rootStore.setFilters(filters);
-                            ref.current?.setHeight(0);
+                            rootStore.setFiltersDescktopShown(false);
                         }}
                     >
                         Показать результаты
                     </AdmiralButton>
+
+                    <AdmiralButton
+                        onClick={() => rootStore.setFiltersDescktopShown(false)}
+                        appearance='secondary'
+                    >
+                        Закрыть фильтры
+                    </AdmiralButton>
                 </Col>
             </div>
-        </FloatingPanel>
+        </Card>
     );
 });
 
-export default FiltersDock;
+export default FiltersDockDescktop;
