@@ -1,0 +1,67 @@
+<div class="department-card card mb-4">
+    <div class="card-body">
+        <h1 class="card-title">{{ department.shortname }}</h1>
+        <p class="card-text">
+            <strong>Department ID:</strong> {{ department.id }}
+        </p>
+        <p class="card-text">
+            <strong>Biskvit ID:</strong> {{ department.biskvitid }}
+        </p>
+        <p class="card-text">
+            <strong>Address:</strong> {{ department.address }}
+        </p>
+        <p class="card-text"><strong>City:</strong> {{ department.city }}</p>
+        <p class="card-text">
+            <strong>Schedule (FL):</strong> {{ department.schedulefl }}
+        </p>
+        <p class="card-text">
+            <strong>Schedule (Juridical):</strong> {{ department.schedulejurl }}
+        </p>
+
+        <h2 class="mt-4">Special</h2>
+        <ul class="list-unstyled">
+            <li><strong>VIP Zone:</strong> {{ department.special.vipzone }}</li>
+            <li>
+                <strong>VIP Office:</strong> {{ department.special.vipoffice }}
+            </li>
+            <li><strong>Ramp:</strong> {{ department.special.ramp }}</li>
+            <li><strong>Person:</strong> {{ department.special.person }}</li>
+            <li>
+                <strong>Juridical:</strong> {{ department.special.juridical }}
+            </li>
+            <li><strong>Prime:</strong> {{ department.special.prime }}</li>
+        </ul>
+
+        <h2 class="mt-4">Coordinates</h2>
+        <p><strong>Latitude:</strong> {{ department.coordinates.latitude }}</p>
+        <p>
+            <strong>Longitude:</strong> {{ department.coordinates.longitude }}
+        </p>
+
+        <h2 class="mt-4">Location</h2>
+        <p><strong>Type:</strong> {{ department.location.type }}</p>
+        <p>
+            <strong>Coordinates (1):</strong> Latitude: {{
+            department.location.coordinates.latitude }}, Longitude: {{
+            department.location.coordinates.longitude }}
+        </p>
+
+        <h2 class="mt-4">Workload</h2>
+        <ul class="list-unstyled">
+            {% for workload_item in department.workload %}
+            <li>
+                <strong>Day:</strong> {{ workload_item.day }}
+                <ul class="list-unstyled">
+                    {% for loadhour in workload_item.loadhours %}
+                    <li>
+                        <strong>Hour:</strong> {{ loadhour.hour }},
+                        <strong>Load:</strong> {{ loadhour.load }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+

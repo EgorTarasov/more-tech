@@ -1,0 +1,9 @@
+fastapi
+pydantic
+pydantic-settings
+python-dotenv
+pymongo
+passlib
+uvicorn
+jinja2
+bcrypt

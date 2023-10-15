@@ -1,0 +1,55 @@
+<div class="col-md-4 mb-4">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">{{ department.shortname }}</h2>
+            <p class="card-text">
+                <strong>Department ID:</strong> {{ department.id }}
+            </p>
+            <p class="card-text">
+                <strong>Biskvit ID:</strong> {{ department.biskvitid }}
+            </p>
+            <p class="card-text">
+                <strong>Address:</strong> {{ department.address }}
+            </p>
+            <p class="card-text">
+                <strong>City:</strong> {{ department.city }}
+            </p>
+            <p class="card-text">
+                <strong>Schedule (FL):</strong> {{ department.schedulefl }}
+            </p>
+            <p class="card-text">
+                <strong>Schedule (Juridical):</strong> {{
+                department.schedulejurl }}
+            </p>
+
+            <h3 class="mt-4">Special</h3>
+            <ul class="list-unstyled">
+                <li>
+                    <strong>VIP Zone:</strong> {{ department.special.vipzone }}
+                </li>
+                <li>
+                    <strong>VIP Office:</strong> {{ department.special.vipoffice
+                    }}
+                </li>
+                <li><strong>Ramp:</strong> {{ department.special.ramp }}</li>
+                <li>
+                    <strong>Person:</strong> {{ department.special.person }}
+                </li>
+                <li>
+                    <strong>Juridical:</strong> {{ department.special.juridical
+                    }}
+                </li>
+                <li><strong>Prime:</strong> {{ department.special.prime }}</li>
+            </ul>
+
+            <h3 class="mt-4">Coordinates</h3>
+            <p>
+                <strong>Latitude:</strong> {{ department.coordinates.latitude }}
+            </p>
+            <p>
+                <strong>Longitude:</strong> {{ department.coordinates.longitude
+                }}
+            </p>
+        </div>
+    </div>
+</div>

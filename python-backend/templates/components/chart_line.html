@@ -1,0 +1,49 @@
+<div>
+    <div class="block">
+        <h1>{{view.title}}</h1>
+        <canvas
+            id="{{view.id}}"
+            aria-label="chart"
+            height="306"
+            width="1154"
+        ></canvas>
+    </div>
+    <style>
+        .block {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+    </style>
+    <script>
+        var chartTooltip = document.getElementById("{{view.id}}").getContext("2d");
+        var data = {{view.data|tojson}}
+        var labels = {{view.labels|tojson}}
+        var toolTip = new Chart(chartTooltip, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        data: data, // данные
+                        backgroundColor: ["#092896"],
+                        borderColor: ["black"],
+                        borderWidth: 1,
+                        pointRadius: 5,
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        tension: 0.1,
+                    },
+                ],
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                },
+            },
+        });
+    </script>
+</div>

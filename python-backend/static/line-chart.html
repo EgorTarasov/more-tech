@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Line Chart Example</title>
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <canvas
+            id="toolTip"
+            aria-label="chart"
+            height="306"
+            width="1154"
+        ></canvas>
+        <ul>
+            <li><button id="1">Пн</button></li>
+            <li><a id="2" onclick="foo(2)" href="">Вт</a></li>
+            <li><a id="3" href="">Ср</a></li>
+            <li><a id="4" href="">Чт</a></li>
+            <li><a id="5" href="">Пт</a></li>
+            <li><a id="6" href="">Су</a></li>
+        </ul>
+        <style>
+            body ul {
+                display: flex;
+                justify-content: start;
+                flex-direction: column;
+            }
+            body ul li {
+                width: 22px;
+                height: 20px;
+                padding: 8px;
+                border-radius: 8px;
+                margin-bottom: 8px;
+                background-color: var(--light_light_grey, #ebedf5);
+                list-style-type: none;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+            }
+        </style>
+        <script>
+            var day_data = new Map();
+            day_data.set("пн", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+            day_data.set("вт", [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1]);
+            day_data.set("ср", [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2]);
+            day_data.set("чт", [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3]);
+            day_data.set("пн", [5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4]);
+            day_data.set("сб", [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5]);
+
+
+            var chartTooltip = document
+                .getElementById("toolTip")
+                .getContext("2d");
+            var toolTip = new Chart(chartTooltip, {
+                type: "line",
+                data: {
+                    labels: [
+                        "9",
+                        "10",
+                        "11",
+                        "12",
+                        "13",
+                        "14",
+                        "15",
+                        "16",
+                        "17",
+                        "18",
+                        "19",
+                        "20",
+                    ],
+                    datasets: [
+                        {
+                            data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], // данные
+                            backgroundColor: ["#092896"],
+                            borderColor: ["black"],
+                            borderWidth: 1,
+                            pointRadius: 5,
+                            fill: false,
+                            borderColor: "rgb(75, 192, 192)",
+                            tension: 0.1,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                    },
+                },
+            });
+
+            function foo(callback){
+                var data = toolTip.config.data;
+                data.datasets[0].data = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1];
+                toolTip.update();
+            }
+
+            $("#1").click(function () {
+                var data = toolTip.config.data;
+                data.datasets[0].data = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1];
+                toolTip.update();
+            });
+        </script>
+    </body>
+</html>
