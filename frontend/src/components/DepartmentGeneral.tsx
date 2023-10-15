@@ -46,7 +46,7 @@ const DepartmentGeneral = ({ department }: Props) => {
 
             <Row justify={'space-between'} align={'middle'} style={{ marginTop: 7 }}>
                 <Col>
-                    <Rate allowHalf defaultValue={Math.min(5, Math.random() * 8)} />
+                    <Rate allowHalf defaultValue={department.rating} />
                 </Col>
 
                 <Col>
