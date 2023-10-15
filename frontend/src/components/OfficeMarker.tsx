@@ -1,5 +1,7 @@
 import { IDepartment } from '../api/models';
-import vtb1 from '../assets/vtb1.svg';
+import vtb_green from '../assets/vtb_green.svg';
+import vtb_orange from '../assets/vtb_orange.svg';
+import vtb_red from '../assets/vtb_red.svg';
 import { useStores } from '../hooks/useStores';
 
 type Props = {
@@ -9,6 +11,14 @@ type Props = {
 const OfficeMarker = ({ department }: Props) => {
     const { rootStore } = useStores();
 
+    let img = vtb_green;
+
+    if (department.rating < 4) {
+        img = vtb_orange;
+    } else if (department.rating < 3.5) {
+        img = vtb_red;
+    }
+
     return (
         <div
             onClick={() => {
@@ -16,7 +26,7 @@ const OfficeMarker = ({ department }: Props) => {
             }}
             className='office-marker'
         >
-            <img src={vtb1} alt={department.shortName} />
+            <img src={img} alt={department.shortName} />
         </div>
     );
 };

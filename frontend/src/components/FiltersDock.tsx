@@ -10,6 +10,7 @@ import { AudioOutlined } from '@ant-design/icons';
 import { Button } from '@admiral-ds/react-ui';
 import { IFilter } from '../models/Filters';
 import { Button as AdmiralButton } from '@admiral-ds/react-ui';
+import { SegmentedValue } from 'antd/es/segmented';
 
 const { Search } = Input;
 
@@ -145,7 +146,13 @@ const FiltersDock = observer(() => {
                 </Row>
 
                 <Row>
-                    <Segmented size='large' options={['Офисы', 'Банкоматы']} />
+                    <Segmented
+                        size='large'
+                        onChange={(value: SegmentedValue) => {
+                            rootStore.setAtmsShown(value === 'Банкоматы');
+                        }}
+                        options={['Офисы', 'Банкоматы']}
+                    />
                 </Row>
 
                 <Row>

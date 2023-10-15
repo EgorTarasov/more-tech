@@ -8,11 +8,15 @@ import { mapRouteToCoords } from '../utils/mapRouteToCoords';
 import { IFilter } from '../models/Filters';
 import { CommonApiServiceInstanse } from '../api/CommonApiService';
 import { AppointmentApiServiceInstanse } from '../api/AppointmentApiService';
+import { IAtm } from '../api/models/IAtm';
+import { AtmApiServiceInstanse } from '../api/AtmsApiService';
 
 export class RootStore {
     departments: IDepartment[] = [];
     filteredDepartments: IDepartment[] = [];
+    atms: IAtm[] = [];
     selectedDepartment: IDepartment | null = null;
+    selectedAtm: IAtm | null = null;
     selectedDepartmentDetails: IDepartmentDetails | null = null;
     mapLocation: IMapLocation = {
         center: [37.617698, 55.755864],
@@ -43,6 +47,7 @@ export class RootStore {
     };
     isSearchLoading: boolean = false;
     isFiltersDescktopShown: boolean = false;
+    isAtmsShown: boolean = false;
 
     constructor() {
         makeAutoObservable(this, {
@@ -56,6 +61,7 @@ export class RootStore {
             openAppointmentTrigger: observable,
             filters: observable,
             isSearchLoading: observable,
+            isAtmsShown: observable,
         });
     }
 
@@ -66,9 +72,21 @@ export class RootStore {
         });
     }
 
+    setAtms(atms: IAtm[]) {
+        runInAction(() => {
+            this.atms = atms;
+        });
+    }
+
     setSelectedDepartment(department: IDepartment | null) {
         runInAction(() => {
             this.selectedDepartment = department;
+        });
+    }
+
+    setSelectedAtm(atm: IAtm | null) {
+        runInAction(() => {
+            this.selectedAtm = atm;
         });
     }
 
@@ -140,6 +158,21 @@ export class RootStore {
         });
     }
 
+    setAtmsShown(isAtmsShown: boolean) {
+        runInAction(() => {
+            this.isAtmsShown = isAtmsShown;
+        });
+
+        this.setPolylyne({
+            id: 'route',
+            geometry: {
+                type: 'LineString',
+                coordinates: [],
+            },
+            style: { stroke: [{ color: '#092896', width: 4 }] },
+        });
+    }
+
     triggerFilter() {
         runInAction(() => {
             this.openFilterTrigger = !this.openFilterTrigger;
@@ -163,37 +196,69 @@ export class RootStore {
         return departments;
     }
 
+    async fetchAtms() {
+        const atms = await AtmApiServiceInstanse.getAtms(this.start[1], this.start[0]);
+
+        this.setAtms(atms);
+
+        return atms;
+    }
+
     async fetchRoute() {
-        if (this.selectedDepartment === null) {
-            return;
+        if (!this.isAtmsShown && this.selectedDepartment !== null) {
+            const route = await OpenMapsAipServiceInstanse.fetchRoute(
+                mapCoordsToString(this.start),
+                mapCoordsToString([
+                    this.selectedDepartment?.location.coordinates.longitude ?? 0,
+                    this.selectedDepartment?.location.coordinates.latitude ?? 0,
+                ])
+            );
+
+            this.setPolylyne({
+                id: 'route',
+                geometry: {
+                    type: 'LineString',
+                    coordinates: mapRouteToCoords(route),
+                },
+                style: { stroke: [{ color: '#092896', width: 4 }] },
+            });
+
+            this.setMapLocation({
+                center: [
+                    this.selectedDepartment.location.coordinates.longitude,
+                    this.selectedDepartment.location.coordinates.latitude,
+                ],
+                zoom: 16,
+            });
+
+            return route;
         }
 
-        const route = await OpenMapsAipServiceInstanse.fetchRoute(
-            mapCoordsToString(this.start),
-            mapCoordsToString([
-                this.selectedDepartment?.location.coordinates.longitude ?? 0,
-                this.selectedDepartment?.location.coordinates.latitude ?? 0,
-            ])
-        );
+        if (this.isAtmsShown && this.selectedAtm) {
+            const route = await OpenMapsAipServiceInstanse.fetchRoute(
+                mapCoordsToString(this.start),
+                mapCoordsToString([
+                    this.selectedAtm?.longitude ?? 0,
+                    this.selectedAtm?.latitude ?? 0,
+                ])
+            );
 
-        this.setPolylyne({
-            id: 'route',
-            geometry: {
-                type: 'LineString',
-                coordinates: mapRouteToCoords(route),
-            },
-            style: { stroke: [{ color: '#092896', width: 4 }] },
-        });
+            this.setPolylyne({
+                id: 'route',
+                geometry: {
+                    type: 'LineString',
+                    coordinates: mapRouteToCoords(route),
+                },
+                style: { stroke: [{ color: '#092896', width: 4 }] },
+            });
 
-        this.setMapLocation({
-            center: [
-                this.selectedDepartment.location.coordinates.longitude,
-                this.selectedDepartment.location.coordinates.latitude,
-            ],
-            zoom: 16,
-        });
+            this.setMapLocation({
+                center: [this.selectedAtm.longitude, this.selectedAtm.latitude],
+                zoom: 16,
+            });
 
-        return route;
+            return route;
+        }
     }
 
     async fetchUser() {

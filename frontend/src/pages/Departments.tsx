@@ -9,6 +9,7 @@ import FiltersDock from '../components/FiltersDock';
 import MediaQuery from 'react-responsive';
 import DockDesktop from '../components/DockDescktop';
 import FiltersDockDescktop from '../components/FiltersDockDescktop';
+import AtmMarker from '../components/AtmMarker';
 
 const Departments = observer(() => {
     const [YMaps, setYMaps] = useState(<div />);
@@ -19,6 +20,7 @@ const Departments = observer(() => {
         async function fetchDepartments() {
             await rootStore.fetchUser();
             await rootStore.fetchDepartments();
+            await rootStore.fetchAtms();
         }
 
         if (navigator.geolocation) {
@@ -82,21 +84,35 @@ const Departments = observer(() => {
                         <YMapControls position='left'>
                             <YMapGeolocationControl />
                         </YMapControls>
-                        {rootStore.filteredDepartments.map((department) => {
-                            return (
-                                <YMapMarker
-                                    key={department._id}
-                                    coordinates={[
-                                        department.location.coordinates.longitude,
-                                        department.location.coordinates?.latitude,
-                                    ]}
-                                    draggable={false}
-                                    position={'center'}
-                                >
-                                    <OfficeMarker department={department} />
-                                </YMapMarker>
-                            );
-                        })}
+                        {!rootStore.isAtmsShown &&
+                            rootStore.filteredDepartments.map((department) => {
+                                return (
+                                    <YMapMarker
+                                        key={department._id}
+                                        coordinates={[
+                                            department.location.coordinates.longitude,
+                                            department.location.coordinates?.latitude,
+                                        ]}
+                                        draggable={false}
+                                        position={'center'}
+                                    >
+                                        <OfficeMarker department={department} />
+                                    </YMapMarker>
+                                );
+                            })}
+                        {rootStore.isAtmsShown &&
+                            rootStore.atms.map((atm) => {
+                                return (
+                                    <YMapMarker
+                                        key={atm._id}
+                                        coordinates={[atm.longitude, atm.latitude]}
+                                        draggable={false}
+                                        position={'center'}
+                                    >
+                                        <AtmMarker atm={atm} />
+                                    </YMapMarker>
+                                );
+                            })}
                         <YMapDefaultMarker coordinates={[rootStore.start[0], rootStore.start[1]]} />
                         <YMapFeature {...rootStore.polylyne} />
                     </YMap>
