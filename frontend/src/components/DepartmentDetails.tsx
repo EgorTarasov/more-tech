@@ -5,7 +5,7 @@ import { Button, Col, Row, Typography, notification } from 'antd';
 import { useStores } from '../hooks/useStores';
 import { LeftOutlined } from '@ant-design/icons';
 import { Button as AdmiralButton } from '@admiral-ds/react-ui';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import WorkLoad from './WorkLoad';
 

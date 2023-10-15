@@ -6,6 +6,9 @@ import OfficeMarker from '../components/OfficeMarker';
 import Search from '../components/Search';
 import Dock from '../components/Dock';
 import FiltersDock from '../components/FiltersDock';
+import MediaQuery from 'react-responsive';
+import DockDesktop from '../components/DockDescktop';
+import FiltersDockDescktop from '../components/FiltersDockDescktop';
 
 const Departments = observer(() => {
     const [YMaps, setYMaps] = useState(<div />);
@@ -109,15 +112,22 @@ const Departments = observer(() => {
         rootStore.departments,
         rootStore.polylyne,
         rootStore.filteredDepartments,
-        rootStore.start
+        rootStore.start,
     ]);
 
     return (
         <>
             <Search />
             <div style={{ width: '100%', height: '100vh' }}>{YMaps}</div>
-            <Dock />
-            <FiltersDock />
+            <MediaQuery query='(max-width: 768px)'>
+                <Dock />
+                <FiltersDock />
+            </MediaQuery>
+
+            <MediaQuery query='(min-width: 768px)'>
+                <DockDesktop />
+                {rootStore.isFiltersDescktopShown ? <FiltersDockDescktop /> : null}
+            </MediaQuery>
         </>
     );
 });

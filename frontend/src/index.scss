@@ -199,3 +199,58 @@ body {
         font-weight: 400;
     }
 }
+
+.dock-descktop {
+    position: fixed;
+    top: 160px;
+    left: 43px;
+    width: 450px;
+    overflow: scroll;
+
+    .ant-card-body {
+        height: 70vh;
+    }
+
+    .department__details__actions {
+        position: relative;
+    }
+
+    .department__details {
+        padding-bottom: 0;
+    }
+}
+
+.dock-descktop {
+    .department-general {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
+
+.filters-dock-descktop {
+    position: fixed;
+    top: 15px;
+    left: 43px;
+    width: 450px;
+    overflow: scroll;
+    z-index: 999;
+
+    .ant-card-body {
+        height: 90vh;
+    }
+
+    .department__details__actions {
+        position: relative;
+    }
+
+    .department__details {
+        padding-bottom: 0;
+    }
+}
+
+.search {
+    &:hover {
+        cursor: pointer;
+    }
+}

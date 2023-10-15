@@ -22,6 +22,7 @@
     "mobx-react-lite": "^4.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-responsive": "^9.0.2",
     "react-router-dom": "^6.16.0",
     "recharts": "^2.8.0",
     "sass": "^1.69.3",

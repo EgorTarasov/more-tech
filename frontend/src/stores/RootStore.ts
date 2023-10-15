@@ -42,6 +42,7 @@ export class RootStore {
         raitingMoreThan45: null,
     };
     isSearchLoading: boolean = false;
+    isFiltersDescktopShown: boolean = false;
 
     constructor() {
         makeAutoObservable(this, {
@@ -54,6 +55,7 @@ export class RootStore {
             openFilterTrigger: observable,
             openAppointmentTrigger: observable,
             filters: observable,
+            isSearchLoading: observable,
         });
     }
 
@@ -129,6 +131,12 @@ export class RootStore {
 
         runInAction(() => {
             this.filters = filters;
+        });
+    }
+
+    setFiltersDescktopShown(isFiltersDescktopShown: boolean) {
+        runInAction(() => {
+            this.isFiltersDescktopShown = isFiltersDescktopShown;
         });
     }
 

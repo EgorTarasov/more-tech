@@ -7,7 +7,13 @@ const Search = () => {
 
     return (
         <>
-            <div onClick={() => rootStore.triggerFilter()} className='search'>
+            <div
+                onClick={() => {
+                    rootStore.triggerFilter();
+                    rootStore.setFiltersDescktopShown(true);
+                }}
+                className='search'
+            >
                 <img src={searchSvg} alt='search' />
             </div>
             <RoadTime />
