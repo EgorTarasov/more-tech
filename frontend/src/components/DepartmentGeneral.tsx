@@ -70,8 +70,8 @@ const DepartmentGeneral = ({ department }: Props) => {
                         <Button
                             style={{
                                 marginLeft: 10,
-                                backgroundColor: department.favourite ? '#f5f5f5' : '#ebedf5',
-                                color: '#6b7683',
+                                backgroundColor: department.favourite ? '#0062ff' : '#ebedf5',
+                                color: department.favourite ? '#fff' : '#6b7683',
                                 border: 'none',
                             }}
                             type='default'
