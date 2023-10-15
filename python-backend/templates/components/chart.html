@@ -1,0 +1,42 @@
+<div>
+    <canvas id="myChart"></canvas>
+    <script>
+            const DATA_COUNT = 7;
+            const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
+
+            const labels = ['Январь', 'Февраль', 'Март'];
+            const data = {
+            labels: labels,
+            datasets: [
+                {
+                label: 'Dataset 1',
+                data: Utils.numbers(NUMBER_CFG),
+                borderColor: Utils.CHART_COLORS.red,
+                backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
+                }
+            ]
+            };
+        // Get a reference to the canvas element
+        var ctx = document.getElementById("myChart").getContext("2d");
+
+        // Define your data for the chart (example data)
+        // Create a chart and configure it
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+        responsive: true,
+        plugins: {
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'Оценка качества обслуживания от 1 до 5'
+                }
+                }
+            },
+            }
+            );
+    </script>
+</div>

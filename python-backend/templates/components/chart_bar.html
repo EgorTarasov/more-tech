@@ -1,0 +1,52 @@
+<div>
+    <div class="ez">
+        <h1>{{view.title}}</h1>
+        <canvas id="{{view.id}}" height="306" width="1154"></canvas>
+    </div>
+    <style>
+        .ez {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            max-height: 306px;
+            max-width: 1154px;
+        }
+    </style>
+    <script>
+        // Get a reference to the canvas element
+        var ctx = document.getElementById("{{view.id}}").getContext("2d");
+
+        // Define your data for the chart (example data)
+        var values = {{view.data|tojson}}
+        var labels = {{view.labels|tojson}}
+        var data = {
+            labels: labels,
+            datasets: [
+                {
+                    data: values,
+                    backgroundColor: "rgba(75, 192, 192, 0.2)", // Bar color
+                    borderColor: "rgba(75, 192, 192, 1)", // Border color
+                    borderWidth: 1,
+                },
+            ],
+        };
+
+        // Create a chart and configure it
+        var myChart = new Chart(ctx, {
+            type: "bar", // Specify the chart type (e.g., bar, line, pie, etc.)
+            data: data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                },
+            },
+        });
+    </script>
+</div>

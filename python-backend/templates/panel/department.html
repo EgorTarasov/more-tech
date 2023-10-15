@@ -1,0 +1,31 @@
+{% extends "shared/base.html" %} {% block content %}
+<h1>{{department.shortname}}</h1>
+<h2>{{department.schedulefl}}</h2>
+<h2 class="last">{{department.schedulejurl}}</h2>
+
+<style>
+    h1 {
+        color: var(--main-blue, #092896);
+        text-align: center;
+        font-size: 22px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+    }
+    * h2 {
+        color: var(--main-blue, #092896);
+        text-align: center;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+    }
+    .last {
+        padding-bottom: 40px;
+    }
+</style>
+
+{% for g in line_graphs%} {% with view=g %} {% include
+"components/chart_line.html" %} {% endwith %} {% endfor %} {% for g in
+bar_graphs%} {% with view=g %} {% include "components/chart_bar.html" %} {%
+endwith %} {% endfor %} {% endblock %}

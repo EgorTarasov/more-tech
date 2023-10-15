@@ -1,0 +1,11 @@
+{% extends "shared/base.html" %} {% block content %}
+<form method="POST">
+    <label for="departmentId">Department ID:</label>
+    <input type="text" id="departmentId" name="departmentId" />
+    <button type="submit">Submit</button>
+</form>
+<div class="department-cards">
+    {% for department in departments %} {% with department=department %} 
+    {%include "components/department_card.html" %} {% endwith %} {% endfor %}
+</div>
+{% endblock %}
