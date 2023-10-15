@@ -6,6 +6,10 @@ import OfficeMarker from '../components/OfficeMarker';
 import Search from '../components/Search';
 import Dock from '../components/Dock';
 import FiltersDock from '../components/FiltersDock';
+import MediaQuery from 'react-responsive';
+import DockDesktop from '../components/DockDescktop';
+import FiltersDockDescktop from '../components/FiltersDockDescktop';
+import AtmMarker from '../components/AtmMarker';
 
 const Departments = observer(() => {
     const [YMaps, setYMaps] = useState(<div />);
@@ -16,8 +20,26 @@ const Departments = observer(() => {
         async function fetchDepartments() {
             await rootStore.fetchUser();
             await rootStore.fetchDepartments();
+            await rootStore.fetchAtms();
         }
-        fetchDepartments();
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (geo: GeolocationPosition) => {
+                    rootStore.setStart([geo.coords.longitude, geo.coords.latitude]);
+                    rootStore.setMapLocation({
+                        ...rootStore.mapLocation,
+                        center: [geo.coords.longitude, geo.coords.latitude],
+                    });
+
+                    fetchDepartments();
+                },
+                (error) => {
+                    console.log(error);
+                    fetchDepartments();
+                }
+            );
+        }
     }, [rootStore]);
 
     useEffect(() => {
@@ -44,9 +66,9 @@ const Departments = observer(() => {
                 const { YMapZoomControl, YMapGeolocationControl } = reactify.module(
                     await ymaps3.import('@yandex/ymaps3-controls@0.0.1')
                 );
-                // const { YMapDefaultMarker } = reactify.module(
-                //     await ymaps3.import('@yandex/ymaps3-markers@0.0.1')
-                // );
+                const { YMapDefaultMarker } = reactify.module(
+                    await ymaps3.import('@yandex/ymaps3-markers@0.0.1')
+                );
 
                 setYMaps(() => (
                     <YMap
@@ -62,21 +84,36 @@ const Departments = observer(() => {
                         <YMapControls position='left'>
                             <YMapGeolocationControl />
                         </YMapControls>
-                        {rootStore.filteredDepartments.map((department) => {
-                            return (
-                                <YMapMarker
-                                    key={department._id}
-                                    coordinates={[
-                                        department.location.coordinates.longitude,
-                                        department.location.coordinates?.latitude,
-                                    ]}
-                                    draggable={false}
-                                    position={'center'}
-                                >
-                                    <OfficeMarker department={department} />
-                                </YMapMarker>
-                            );
-                        })}
+                        {!rootStore.isAtmsShown &&
+                            rootStore.filteredDepartments.map((department) => {
+                                return (
+                                    <YMapMarker
+                                        key={department._id}
+                                        coordinates={[
+                                            department.location.coordinates.longitude,
+                                            department.location.coordinates?.latitude,
+                                        ]}
+                                        draggable={false}
+                                        position={'center'}
+                                    >
+                                        <OfficeMarker department={department} />
+                                    </YMapMarker>
+                                );
+                            })}
+                        {rootStore.isAtmsShown &&
+                            rootStore.atms.map((atm) => {
+                                return (
+                                    <YMapMarker
+                                        key={atm._id}
+                                        coordinates={[atm.longitude, atm.latitude]}
+                                        draggable={false}
+                                        position={'center'}
+                                    >
+                                        <AtmMarker atm={atm} />
+                                    </YMapMarker>
+                                );
+                            })}
+                        <YMapDefaultMarker coordinates={[rootStore.start[0], rootStore.start[1]]} />
                         <YMapFeature {...rootStore.polylyne} />
                     </YMap>
                 ));
@@ -91,14 +128,22 @@ const Departments = observer(() => {
         rootStore.departments,
         rootStore.polylyne,
         rootStore.filteredDepartments,
+        rootStore.start,
     ]);
 
     return (
         <>
             <Search />
             <div style={{ width: '100%', height: '100vh' }}>{YMaps}</div>
-            <Dock />
-            <FiltersDock />
+            <MediaQuery query='(max-width: 768px)'>
+                <Dock />
+                <FiltersDock />
+            </MediaQuery>
+
+            <MediaQuery query='(min-width: 768px)'>
+                <DockDesktop />
+                {rootStore.isFiltersDescktopShown ? <FiltersDockDescktop /> : null}
+            </MediaQuery>
         </>
     );
 });

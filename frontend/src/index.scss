@@ -176,3 +176,81 @@ body {
         }
     }
 }
+
+.road-time {
+    position: absolute;
+    top: 82px;
+    left: 42px;
+    z-index: 1;
+    display: flex;
+    gap: 10px;
+    &__tile {
+        width: 80px;
+        height: 30px;
+        background: #fff;
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        color: #6b7683;
+        font-weight: 400;
+    }
+}
+
+.dock-descktop {
+    position: fixed;
+    top: 160px;
+    left: 43px;
+    width: 450px;
+    overflow: scroll;
+
+    .ant-card-body {
+        height: 70vh;
+    }
+
+    .department__details__actions {
+        position: relative;
+    }
+
+    .department__details {
+        padding-bottom: 0;
+    }
+}
+
+.dock-descktop {
+    .department-general {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
+
+.filters-dock-descktop {
+    position: fixed;
+    top: 15px;
+    left: 43px;
+    width: 450px;
+    overflow: scroll;
+    z-index: 999;
+
+    .ant-card-body {
+        height: 90vh;
+    }
+
+    .department__details__actions {
+        position: relative;
+    }
+
+    .department__details {
+        padding-bottom: 0;
+    }
+}
+
+.search {
+    &:hover {
+        cursor: pointer;
+    }
+}

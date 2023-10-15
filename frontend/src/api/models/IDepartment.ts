@@ -9,6 +9,7 @@ export interface IDepartment {
     rating: number;
     location: ILocation;
     schedule: ISchedule[];
+    favourite: boolean;
 }
 
 export interface ISpecial {
@@ -52,11 +53,13 @@ export interface IDepartmentDetails {
     location: ILocation;
     schedule: ISchedule[];
     workload: IWorkload[];
+    estimatedTimeCar: number;
+    estimatedTimeWalk: number;
 }
 
 export interface IWorkload {
     day: string;
-    loadhours: Iloadhours[];
+    loadHours: Iloadhours[];
 }
 
 export interface ISearchResponse {
