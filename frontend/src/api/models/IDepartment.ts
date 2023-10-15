@@ -9,6 +9,7 @@ export interface IDepartment {
     rating: number;
     location: ILocation;
     schedule: ISchedule[];
+    favourite: boolean;
 }
 
 export interface ISpecial {

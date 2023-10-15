@@ -27,6 +27,24 @@ export class DepartmentsApiService {
 
         return response.data;
     }
+
+    public async postDepartmentRating(departmentId: string, rating: number): Promise<void> {
+        const response = await axios.post<void>(`${API_URL}/v1/departments/rating`, {
+            departmentId,
+            rating,
+            text: 'text',
+        });
+
+        return response.data;
+    }
+
+    public async setAsFavorite(departmentId: string): Promise<void> {
+        const response = await axios.post<void>(
+            `${API_URL}/v1/departments/favourite/${departmentId}`
+        );
+
+        return response.data;
+    }
 }
 
 export const DepartmentsApiServiceInstanse = new DepartmentsApiService();

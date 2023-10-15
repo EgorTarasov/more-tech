@@ -262,4 +262,19 @@ export class RootStore {
 
         return appointment;
     }
+
+    async postDepartmentRating(rating: number, departmentId: string) {
+        const response = await DepartmentsApiServiceInstanse.postDepartmentRating(
+            departmentId,
+            rating
+        );
+
+        return response;
+    }
+
+    async setAsFavorite(departmentId: string) {
+        const response = await DepartmentsApiServiceInstanse.setAsFavorite(departmentId);
+
+        return response;
+    }
 }
