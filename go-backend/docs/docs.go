@@ -16,6 +16,99 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/atms/range": {
+            "post": {
+                "description": "Get atm by range",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "atm"
+                ],
+                "summary": "Get atm by range",
+                "parameters": [
+                    {
+                        "description": "Atm data",
+                        "name": "atmData",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AtmRangeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Atm",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AtmRangeResponse"
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable entity",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/atms/{id}": {
+            "get": {
+                "description": "Get atm by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "atm"
+                ],
+                "summary": "Get atm by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "atm id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "start longitude",
+                        "name": "startLongitude",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "start latitude",
+                        "name": "startLatitude",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Atm",
+                        "schema": {
+                            "$ref": "#/definitions/model.Atm"
+                        }
+                    },
+                    "404": {
+                        "description": "Atm not found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/departments": {
             "post": {
                 "description": "Get department by range",
@@ -598,6 +691,124 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "model.Atm": {
+            "type": "object",
+            "required": [
+                "address",
+                "allDay",
+                "latitude",
+                "longitude",
+                "services"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string",
+                    "example": "ул. Богородский Вал, д. 6, корп. 1"
+                },
+                "allDay": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "estimatedTimeCar": {
+                    "type": "number"
+                },
+                "estimatedTimeWalk": {
+                    "type": "number"
+                },
+                "latitude": {
+                    "type": "number",
+                    "example": 55.802432
+                },
+                "location": {
+                    "$ref": "#/definitions/model.Location"
+                },
+                "longitude": {
+                    "type": "number",
+                    "example": 37.704547
+                },
+                "services": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "model.AtmRangeRequest": {
+            "type": "object",
+            "required": [
+                "latitude",
+                "longitude",
+                "radius"
+            ],
+            "properties": {
+                "latitude": {
+                    "type": "number",
+                    "example": 55.802432
+                },
+                "longitude": {
+                    "type": "number",
+                    "example": 37.704547
+                },
+                "radius": {
+                    "description": "in km",
+                    "type": "number",
+                    "example": 10
+                }
+            }
+        },
+        "model.AtmRangeResponse": {
+            "type": "object",
+            "required": [
+                "address",
+                "allDay",
+                "latitude",
+                "longitude",
+                "services"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string",
+                    "example": "ул. Богородский Вал, д. 6, корп. 1"
+                },
+                "allDay": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "distance": {
+                    "type": "number"
+                },
+                "latitude": {
+                    "type": "number",
+                    "example": 55.802432
+                },
+                "location": {
+                    "$ref": "#/definitions/model.Location"
+                },
+                "longitude": {
+                    "type": "number",
+                    "example": 37.704547
+                },
+                "services": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "model.Coordinates": {
             "type": "object",
             "properties": {
@@ -652,6 +863,9 @@ const docTemplate = `{
                 },
                 "location": {
                     "$ref": "#/definitions/model.Location"
+                },
+                "rating": {
+                    "type": "number"
                 },
                 "scheduleFl": {
                     "type": "string",

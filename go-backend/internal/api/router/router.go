@@ -58,4 +58,5 @@ func (r *router) setup() {
 	r.setupDepartmentRoutes(v1, routeHost)
 	r.setupTicketRoutes(v1, routeHost)
 	r.setupSearchtRoutes(v1, mlHost)
+	r.setupAtmRoutes(v1, routeHost)
 }

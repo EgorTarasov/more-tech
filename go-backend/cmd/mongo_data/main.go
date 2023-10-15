@@ -92,6 +92,7 @@ type Atm struct {
 	Longitude float64  `json:"longitude"`
 	AllDay    bool     `json:"allDay"`
 	Services  Services `json:"services"`
+	Location  Location `json:"location"`
 }
 
 type Wheelchair struct {
@@ -162,15 +163,19 @@ func loadAtms(client *mongo.Client) {
 		panic(err)
 	}
 
-	// TODO: сделать нормальный парсинг
-	atms := []map[string]any{}
+	atms := []Atm{}
 	err = json.Unmarshal([]byte(data), &atms)
 	if err != nil {
 		panic(err)
 	}
-	atms_result := make([]interface{}, len(atms))
-	for idx, atm := range atms {
-		atms_result[idx] = atm
+
+	atms_result := make([]interface{}, 0)
+	for _, atm := range atms {
+		atm.Location = Location{
+			Type:        "Point",
+			Coordinates: Coordinates{Latitude: atm.Latitude, Longitude: atm.Longitude},
+		}
+		atms_result = append(atms_result, atm)
 	}
 
 	_, err = client.Database("dev").Collection("atms").InsertMany(context.Background(), atms_result)

@@ -2,7 +2,7 @@ include .env
 export $(shell sed 's/=.*//' .env)
 
 swag:
-	~/go/bin/swag init -g ./go-backend/cmd/server/main.go -o ./docs
+	~/go/bin/swag init -g ./go-backend/cmd/server/main.go -o ./go-backend/docs
 	~/go/bin/swag fmt
 
 # запуск локально, без докера
@@ -12,10 +12,12 @@ debug: swag
 
 db_load:
 	docker compose -f deployment/docker-compose.yaml up mongo -d
-	go run go-backend/cmd/mongo_data/main.go
+	go build -o db_load go-backend/cmd/mongo_data/main.go
+	./db_load
+	rm ./db_load
 
 # локально, с докером
-local: swag
+local:
 	docker compose -f deployment/docker-compose.yaml up --build -d
 
 stop_local:

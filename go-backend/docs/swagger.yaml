@@ -1,4 +1,89 @@
 definitions:
+  model.Atm:
+    properties:
+      _id:
+        type: string
+      address:
+        example: ул. Богородский Вал, д. 6, корп. 1
+        type: string
+      allDay:
+        example: true
+        type: boolean
+      estimatedTimeCar:
+        type: number
+      estimatedTimeWalk:
+        type: number
+      latitude:
+        example: 55.802432
+        type: number
+      location:
+        $ref: '#/definitions/model.Location'
+      longitude:
+        example: 37.704547
+        type: number
+      services:
+        additionalProperties:
+          additionalProperties:
+            type: string
+          type: object
+        type: object
+    required:
+    - address
+    - allDay
+    - latitude
+    - longitude
+    - services
+    type: object
+  model.AtmRangeRequest:
+    properties:
+      latitude:
+        example: 55.802432
+        type: number
+      longitude:
+        example: 37.704547
+        type: number
+      radius:
+        description: in km
+        example: 10
+        type: number
+    required:
+    - latitude
+    - longitude
+    - radius
+    type: object
+  model.AtmRangeResponse:
+    properties:
+      _id:
+        type: string
+      address:
+        example: ул. Богородский Вал, д. 6, корп. 1
+        type: string
+      allDay:
+        example: true
+        type: boolean
+      distance:
+        type: number
+      latitude:
+        example: 55.802432
+        type: number
+      location:
+        $ref: '#/definitions/model.Location'
+      longitude:
+        example: 37.704547
+        type: number
+      services:
+        additionalProperties:
+          additionalProperties:
+            type: string
+          type: object
+        type: object
+    required:
+    - address
+    - allDay
+    - latitude
+    - longitude
+    - services
+    type: object
   model.Coordinates:
     properties:
       latitude:
@@ -38,6 +123,8 @@ definitions:
         type: integer
       location:
         $ref: '#/definitions/model.Location'
+      rating:
+        type: number
       scheduleFl:
         example: 'пн-пт: 10:00-20:00 сб: 10:00-17:00 вс: выходной'
         type: string
@@ -251,6 +338,67 @@ info:
   title: More Tech API
   version: 0.0.1
 paths:
+  /v1/atms/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get atm by id
+      parameters:
+      - description: atm id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: start longitude
+        in: query
+        name: startLongitude
+        type: number
+      - description: start latitude
+        in: query
+        name: startLatitude
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Atm
+          schema:
+            $ref: '#/definitions/model.Atm'
+        "404":
+          description: Atm not found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get atm by id
+      tags:
+      - atm
+  /v1/atms/range:
+    post:
+      consumes:
+      - application/json
+      description: Get atm by range
+      parameters:
+      - description: Atm data
+        in: body
+        name: atmData
+        required: true
+        schema:
+          $ref: '#/definitions/model.AtmRangeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Atm
+          schema:
+            items:
+              $ref: '#/definitions/model.AtmRangeResponse'
+            type: array
+        "422":
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get atm by range
+      tags:
+      - atm
   /v1/departments:
     post:
       consumes:
