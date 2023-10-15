@@ -107,6 +107,24 @@ func (dc *departmentController) GetDepartmentById(c *gin.Context) {
 		department.AvailableNow = true
 	}
 
+	var ratings []model.DepartmentRating
+
+	ratings, err = dc.rr.FindMany(c.Request.Context(), bson.M{"departmentId": department.MongoId})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
+		return
+	}
+
+	avgRating := 0.0
+	for _, rating := range ratings {
+		avgRating += rating.Rating
+	}
+
+	if len(ratings) > 0 {
+		avgRating /= float64(len(ratings))
+	}
+	department.Rating = avgRating
+
 	favourite, err := dc.fr.FindOne(c.Request.Context(), bson.M{"userId": userId})
 	if errors.Is(err, mongo.ErrNoDocuments) {
 		c.JSON(http.StatusOK, department)
@@ -229,10 +247,9 @@ func (dc *departmentController) AddDepartmentRating(c *gin.Context) {
 
 	userId, err = c.Cookie("session")
 	if err != nil {
-
 		userId = c.GetString("session")
-
 	}
+
 	ratingData.UserId = userId
 	logging.Log.Debug(ratingData)
 

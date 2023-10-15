@@ -16,6 +16,7 @@ type Department struct {
 	City              string      `json:"city" example:"Химки"`
 	ScheduleFl        string      `json:"scheduleFl" example:"пн-пт: 10:00-20:00 сб: 10:00-17:00 вс: выходной"`
 	ScheduleJurL      string      `json:"scheduleJurL" example:"пн-чт: 10:00-19:00 пт: 10:00-18:00 сб, вс: выходной"`
+	Rating            float64     `json:"rating" bson:"rating"`
 	Special           Special     `json:"special"`
 	Coordinates       Coordinates `json:"coordinates"`
 	Location          Location    `json:"location"`

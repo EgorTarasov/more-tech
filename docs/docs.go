@@ -653,6 +653,9 @@ const docTemplate = `{
                 "location": {
                     "$ref": "#/definitions/model.Location"
                 },
+                "rating": {
+                    "type": "number"
+                },
                 "scheduleFl": {
                     "type": "string",
                     "example": "пн-пт: 10:00-20:00 сб: 10:00-17:00 вс: выходной"

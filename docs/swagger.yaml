@@ -38,6 +38,8 @@ definitions:
         type: integer
       location:
         $ref: '#/definitions/model.Location'
+      rating:
+        type: number
       scheduleFl:
         example: 'пн-пт: 10:00-20:00 сб: 10:00-17:00 вс: выходной'
         type: string
