@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_URL } from '../config';
+import { ITicket } from './models/ITicket';
 
 export class AppointmentApiService {
     async getAppointment(id: string): Promise<void> {
@@ -13,8 +14,8 @@ export class AppointmentApiService {
         timeSlot: string,
         startLatitude: number,
         startLongitude: number
-    ): Promise<void> {
-        const response = await axios.post<void>(`${API_URL}/v1/tickets`, {
+    ): Promise<ITicket> {
+        const response = await axios.post<ITicket>(`${API_URL}/v1/tickets`, {
             departmentId,
             timeSlot,
             startLatitude,

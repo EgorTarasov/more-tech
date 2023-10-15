@@ -52,6 +52,8 @@ export interface IDepartmentDetails {
     location: ILocation;
     schedule: ISchedule[];
     workload: IWorkload[];
+    estimatedTimeCar: number;
+    estimatedTimeWalk: number;
 }
 
 export interface IWorkload {

@@ -1,11 +1,11 @@
 import { Accordion, AccordionItem } from '@admiral-ds/react-ui';
 import { IDepartment } from '../api/models';
 import DepartmentGeneral from './DepartmentGeneral';
-import { Button, Col, Row, Typography, message } from 'antd';
+import { Button, Col, Row, Typography, notification } from 'antd';
 import { useStores } from '../hooks/useStores';
 import { LeftOutlined } from '@ant-design/icons';
 import { Button as AdmiralButton } from '@admiral-ds/react-ui';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import WorkLoad from './WorkLoad';
 
@@ -17,7 +17,7 @@ const DepartmentDetails = observer(({ department }: Props) => {
     const { rootStore } = useStores();
     const [selectedTimeIndex, setSelectedTimeIndex] = useState<number>(0);
     const [selectedTime, setSelectedTime] = useState<string>('10:00-11:00');
-    const [messageApi, contextHolder] = message.useMessage();
+    const [api, contextHolder] = notification.useNotification();
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
@@ -438,15 +438,36 @@ const DepartmentDetails = observer(({ department }: Props) => {
 
                             rootStore
                                 .createAppointment(selectedTime)
-                                .then(() => {
-                                    messageApi.success('Вы записаны на ' + selectedTime);
+                                .then((ticket) => {
+                                    api.info({
+                                        message: 'Вы записаны на ' + selectedTime,
+                                        description: (
+                                            <div>
+                                                <div>
+                                                    Время на дорогу:{' '}
+                                                    {Math.ceil(
+                                                        ticket ? ticket?.estimatedTimeWalk / 60 : 0
+                                                    )}{' '}
+                                                    минут пешком. Или{' '}
+                                                    {Math.ceil(
+                                                        ticket ? ticket?.estimatedTimeCar / 60 : 0
+                                                    )}{' '}
+                                                    минут на машине
+                                                </div>
+                                            </div>
+                                        ),
+                                        placement: 'topRight',
+                                    });
                                 })
                                 .catch((error) => {
                                     console.log(error);
-
-                                    messageApi.error(
-                                        'Ошибка записи. Попробуйте записаться на другое время'
-                                    );
+                                    api.error({
+                                        message: 'Ошибка записи',
+                                        description: (
+                                            <div>Попробуйте записаться на другое время</div>
+                                        ),
+                                        placement: 'topRight',
+                                    });
                                 })
                                 .finally(() => {
                                     setIsLoading(false);
